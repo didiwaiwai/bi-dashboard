@@ -788,30 +788,28 @@ function renderOnlineKPIs(){
 
 function renderFlowFunnel(){
     var stages=[
-        {name:'流量',sub:'曝光UV',count:'2,586.6万',rate:'100%',bg:'#eff6ff',text:'#2563eb',w:100},
-        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8',w:82},
-        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af',w:66},
-        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a',w:50},
+        {name:'流量',sub:'曝光UV',count:'2,586.6万',rate:'100%',bg:'#eff6ff',text:'#2563eb',w:96},
+        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8',w:85},
+        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af',w:75},
+        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a',w:65},
     ];
-    var html='<div class="flex flex-col items-center gap-1.5">';
+    var html='<div class="flex flex-col items-center gap-1">';
     for(var i=0;i<stages.length;i++){
         var s=stages[i];
         html+=
-        '<div class="rounded-lg px-3 py-2 flex items-center justify-between w-full" style="width:'+s.w+'%;background:'+s.bg+'">'+
-            '<div><span class="text-sm font-bold" style="color:'+s.text+'">'+s.name+'</span>'+
-            '<span class="text-[10px] text-slate-500 ml-2">'+s.sub+'</span></div>'+
-            '<div class="flex items-center gap-2">'+
-            '<span class="text-sm font-bold text-slate-800">'+s.count+'</span>'+
-            '<span class="text-[11px] font-semibold" style="color:'+s.text+'">'+s.rate+'</span></div>'+
+        '<div class="rounded-lg px-2.5 py-1.5 flex items-center justify-between" style="width:'+s.w+'%;background:'+s.bg+'">'+
+            '<div><span class="text-xs font-bold" style="color:'+s.text+'">'+s.name+'</span>'+
+            '<span class="text-[9px] text-slate-400 ml-2">'+s.sub+'</span></div>'+
+            '<div class="flex items-center gap-1.5">'+
+            '<span class="text-xs font-bold text-slate-700">'+s.count+'</span>'+
+            '<span class="text-[10px] font-medium" style="color:'+s.text+'">'+s.rate+'</span></div>'+
         '</div>';
-        if(i<stages.length-1){
-            html+='<i class="fa fa-angle-down text-slate-300 text-xs"></i>';
-        }
+        if(i<stages.length-1)html+='<i class="fa fa-angle-down text-slate-300 text-[10px]"></i>';
     }
-    html+='<div class="rounded-lg px-3 py-2 flex items-center justify-between" style="width:50%;background:#f1f5f9">'+
-        '<span class="text-sm font-bold text-slate-700">成交额</span>'+
-        '<div class="flex items-center gap-2"><span class="text-sm font-bold text-slate-800">¥9.68亿</span>'+
-        '<span class="text-[11px] text-green-600 font-semibold">↑ 12.7%</span></div></div>';
+    html+='<div class="rounded-lg px-2.5 py-1.5 flex items-center justify-between" style="width:65%;background:#f1f5f9">'+
+        '<span class="text-xs font-bold text-slate-700">成交额</span>'+
+        '<div class="flex items-center gap-1.5"><span class="text-xs font-bold text-slate-800">¥9.68亿</span>'+
+        '<span class="text-[10px] text-green-600 font-medium">↑12.7%</span></div></div>';
     html+='</div>';
     document.getElementById('flowFunnelArea').innerHTML=html;
 }
