@@ -749,13 +749,13 @@ function buildOnlineLayoutHTML(){
     return ''+
     // KPI行
     '<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-9 gap-2" id="onlineKpiRow"></div>'+
-    // 第2行：流量漏斗 + 店铺排名 + 流量趋势
-    '<div class="grid grid-cols-1 lg:grid-cols-3 gap-3">'+
+    // 第2行：流量漏斗 + 店铺排名 + 流量趋势(占1/2宽)
+    '<div class="grid grid-cols-1 lg:grid-cols-4 gap-3">'+
         '<div class="bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-2"><h3 class="section-title">流量漏斗</h3><span class="text-xs text-slate-400">6月累计</span></div><div class="flex-1" id="flowFunnelArea"></div></div>'+
         '<div class="bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-2"><h3 class="section-title">店铺销售与利润排名</h3><span class="text-xs text-slate-400">6月 | 万元</span></div><div class="overflow-x-auto flex-1" id="storeRankArea"></div></div>'+
-        '<div class="bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-2"><h3 class="section-title">平台流量趋势</h3><div class="flex items-center gap-2"><div class="flex items-center gap-1 bg-slate-50 rounded-lg px-2 py-0.5 border border-slate-200 text-xs"><i class="fa fa-calendar text-slate-400"></i><select id="trafficDateSelect" class="bg-transparent text-slate-600 outline-none cursor-pointer text-xs"><option value="2weeks" selected>近两周</option><option value="1month">近一月</option></select></div><div class="flex gap-0.5"><button class="traffic-range-btn px-2 py-0.5 text-xs rounded-full bg-blue-50 text-accent font-medium" data-range="week">周</button><button class="traffic-range-btn px-2 py-0.5 text-xs rounded-full text-slate-400 hover:text-slate-600" data-range="month">月</button></div></div></div>'+
-            '<div class="flex flex-wrap gap-x-4 gap-y-1 text-xs mb-1" id="trafficLegend"></div>'+
-            '<div class="relative flex-1" style="min-height:220px"><canvas id="trafficTrendChart"></canvas></div></div>'+
+        '<div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-2"><h3 class="section-title">平台流量趋势</h3><div class="flex items-center gap-2"><div class="flex items-center gap-1 bg-slate-50 rounded-lg px-2 py-0.5 border border-slate-200 text-xs"><i class="fa fa-calendar text-slate-400"></i><select id="trafficDateSelect" class="bg-transparent text-slate-600 outline-none cursor-pointer text-xs"><option value="2weeks" selected>近两周</option><option value="1month">近一月</option></select></div><div class="flex gap-0.5"><button class="traffic-range-btn px-2 py-0.5 text-xs rounded-full bg-blue-50 text-accent font-medium" data-range="week">周</button><button class="traffic-range-btn px-2 py-0.5 text-xs rounded-full text-slate-400 hover:text-slate-600" data-range="month">月</button></div></div></div>'+
+            '<div class="flex flex-wrap gap-x-3 gap-y-1 text-xs mb-1" id="trafficLegend"></div>'+
+            '<div class="relative flex-1" style="min-height:240px"><canvas id="trafficTrendChart"></canvas></div></div>'+
     '</div>'+
     // 第3行：广告诊断 + 坑位关键词 + 经营池
     '<div class="grid grid-cols-1 lg:grid-cols-3 gap-3">'+
@@ -789,9 +789,9 @@ function renderOnlineKPIs(){
 function renderFlowFunnel(){
     var stages=[
         {name:'流量',sub:'曝光UV',count:'2,586.6万',rate:'100%',bg:'#eff6ff',text:'#2563eb',w:100},
-        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8',w:92},
-        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af',w:84},
-        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a',w:76},
+        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8',w:96},
+        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af',w:92},
+        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a',w:88},
     ];
     var html='<div class="flex flex-col items-center gap-1">';
     for(var i=0;i<stages.length;i++){
@@ -806,7 +806,7 @@ function renderFlowFunnel(){
         '</div>';
         if(i<stages.length-1)html+='<i class="fa fa-angle-down text-slate-300 text-[10px]"></i>';
     }
-    html+='<div class="rounded-lg px-2.5 py-1.5 flex items-center justify-between" style="width:76%;background:#f1f5f9">'+
+    html+='<div class="rounded-lg px-2.5 py-1.5 flex items-center justify-between" style="width:88%;background:#f1f5f9">'+
         '<span class="text-xs font-bold text-slate-700">成交额</span>'+
         '<div class="flex items-center gap-1.5"><span class="text-xs font-bold text-slate-800">¥9.68亿</span>'+
         '<span class="text-[10px] text-green-600 font-medium">↑12.7%</span></div></div>';
@@ -851,10 +851,10 @@ function renderTrafficTrend(){
     });
     if(!window.__charts)window.__charts={};
     window.__charts.trafficTrend=chart;
-    var legHtml='<div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px]">';
+    var legHtml='<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">';
     for(var i=0;i<trafficTrendData.datasets.length;i++){
         var d=trafficTrendData.datasets[i];
-        legHtml+='<span class="flex items-center gap-0.5"><span class="w-2 h-2 rounded-full flex-shrink-0" style="background:'+d.color+'"></span>'+d.label+' <b class="text-slate-500">'+d.data[d.data.length-1]+'万</b></span>';
+        legHtml+='<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:'+d.color+'"></span>'+d.label+' <b class="text-slate-500">'+d.data[d.data.length-1]+'万</b></span>';
     }
     legHtml+='</div>';
     document.getElementById('trafficLegend').innerHTML=legHtml;
