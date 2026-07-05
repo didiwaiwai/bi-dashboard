@@ -788,16 +788,16 @@ function renderOnlineKPIs(){
 
 function renderFlowFunnel(){
     var stages=[
-        {name:'流量',sub:'曝光UV',count:'2,586.6万',rate:'100%',bg:'#eff6ff',text:'#2563eb'},
-        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8'},
-        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af'},
-        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a'},
+        {name:'流量',sub:'曝光UV',count:'2,586.6万',rate:'100%',bg:'#eff6ff',text:'#2563eb',w:100},
+        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8',w:82},
+        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af',w:66},
+        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a',w:50},
     ];
-    var html='<div class="flex flex-col gap-1.5">';
+    var html='<div class="flex flex-col items-center gap-1.5">';
     for(var i=0;i<stages.length;i++){
         var s=stages[i];
         html+=
-        '<div class="rounded-lg px-3 py-2 flex items-center justify-between" style="background:'+s.bg+'">'+
+        '<div class="rounded-lg px-3 py-2 flex items-center justify-between w-full" style="width:'+s.w+'%;background:'+s.bg+'">'+
             '<div><span class="text-sm font-bold" style="color:'+s.text+'">'+s.name+'</span>'+
             '<span class="text-[10px] text-slate-500 ml-2">'+s.sub+'</span></div>'+
             '<div class="flex items-center gap-2">'+
@@ -805,10 +805,10 @@ function renderFlowFunnel(){
             '<span class="text-[11px] font-semibold" style="color:'+s.text+'">'+s.rate+'</span></div>'+
         '</div>';
         if(i<stages.length-1){
-            html+='<div class="flex justify-center"><i class="fa fa-angle-down text-slate-300 text-xs"></i></div>';
+            html+='<i class="fa fa-angle-down text-slate-300 text-xs"></i>';
         }
     }
-    html+='<div class="rounded-lg px-3 py-2 flex items-center justify-between" style="background:#f1f5f9">'+
+    html+='<div class="rounded-lg px-3 py-2 flex items-center justify-between" style="width:50%;background:#f1f5f9">'+
         '<span class="text-sm font-bold text-slate-700">成交额</span>'+
         '<div class="flex items-center gap-2"><span class="text-sm font-bold text-slate-800">¥9.68亿</span>'+
         '<span class="text-[11px] text-green-600 font-semibold">↑ 12.7%</span></div></div>';
