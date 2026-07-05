@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>科然数智 - 经营驾驶舱</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>tailwind.config={theme:{extend:{colors:{sidebar:{DEFAULT:'#0f1a2e',hover:'#1a2d47',active:'#1e3a5f'},accent:'#3b82f6','accent-light':'#60a5fa'}}}}}</script>
+    <style>
+        :root{--sidebar-width:170px;--sidebar-collapsed:48px}
+        *{margin:0;padding:0;box-sizing:border-box}
+        html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft YaHei',sans-serif}
+        .sidebar{width:var(--sidebar-width);transition:width .3s cubic-bezier(.4,0,.2,1);overflow:hidden;white-space:nowrap;z-index:50}
+        .sidebar.collapsed{width:var(--sidebar-collapsed)}
+        .sidebar.collapsed .menu-text{opacity:0;transform:translateX(-8px)}
+        .sidebar.collapsed .logo-sub{opacity:0;max-height:0}
+        .sidebar.collapsed .logo-main{font-size:0}
+        .menu-text{transition:opacity .25s,transform .25s;display:inline}
+        .logo-sub{transition:opacity .25s,max-height .3s;max-height:20px;overflow:hidden}
+        .main-area{margin-left:var(--sidebar-width);transition:margin-left .3s cubic-bezier(.4,0,.2,1)}
+        .sidebar.collapsed~.main-area{margin-left:var(--sidebar-collapsed)}
+        .menu-item{transition:all .2s;border-left:3px solid transparent}
+        .menu-item:hover{background-color:#1a2d47}
+        .menu-item.active{background-color:#1e3a5f;border-left-color:#3b82f6}
+        .menu-item.active .menu-icon{color:#60a5fa}
+        .collapse-btn{transition:background-color .2s}
+        .collapse-btn:hover{background-color:#1a2d47}
+        @media(max-width:768px){.sidebar{position:fixed;left:0;top:0;bottom:0}.sidebar.collapsed{width:0}.main-area{margin-left:0!important}}
+        ::-webkit-scrollbar{width:6px;height:6px}
+        ::-webkit-scrollbar-track{background:transparent}
+        ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:3px}
+        .kpi-up{color:#22c55e}.kpi-down{color:#ef4444}.kpi-warn{color:#f59e0b}
+        .treemap-cell{transition:opacity .2s}.treemap-cell:hover{opacity:.85}
+        .heat-cell{transition:transform .15s}.heat-cell:hover{transform:scale(1.08);z-index:2;position:relative}
+        .progress-fill{transition:width .6s cubic-bezier(.4,0,.2,1)}
+        .section-title{font-size:15px;font-weight:600;color:#1e293b}
+        .badge-red{background:#fef2f2;color:#ef4444;font-size:11px;padding:2px 8px;border-radius:999px}
+        .badge-green{background:#f0fdf4;color:#22c55e;font-size:11px;padding:2px 8px;border-radius:999px}
+        .badge-yellow{background:#fffbeb;color:#f59e0b;font-size:11px;padding:2px 8px;border-radius:999px}
+        .badge-blue{background:#eff6ff;color:#3b82f6;font-size:11px;padding:2px 8px;border-radius:999px}
+    </style>
+</head>
+<body class="bg-slate-100 flex h-full overflow-hidden">
+
+<aside id="sidebar" class="sidebar fixed left-0 top-0 h-full bg-sidebar text-white flex flex-col select-none">
+    <div class="flex items-center gap-3 px-4 py-5 border-b border-white/10">
+        <div class="w-9 h-9 bg-accent rounded-lg flex items-center justify-center flex-shrink-0"><span class="text-white font-bold text-lg">科</span></div>
+        <div class="overflow-hidden"><div class="text-base font-bold tracking-wide logo-main">科然数智</div><div class="text-[10px] text-gray-400 tracking-widest logo-sub">KERAN DIGITAL</div></div>
+    </div>
+    <nav class="flex-1 overflow-y-auto overflow-x-hidden py-2"><ul id="menuList" class="space-y-0.5"></ul></nav>
+    <div class="border-t border-white/10">
+        <button id="collapseBtn" class="collapse-btn w-full flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white text-sm" onclick="toggleSidebar()">
+            <i class="fa fa-angle-double-left menu-icon text-sm w-5 text-center"></i><span class="menu-text">收起菜单</span>
+        </button>
+    </div>
+</aside>
+
+<div id="mainArea" class="main-area flex-1 flex flex-col min-h-full overflow-y-auto">
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="flex items-center justify-between px-6 py-3">
+            <div class="flex items-center gap-3">
+                <button class="md:hidden text-slate-500 hover:text-slate-700" onclick="toggleSidebar()"><i class="fa fa-bars text-lg"></i></button>
+                <div class="flex items-center gap-2 text-sm text-slate-500"><i class="fa fa-home text-accent"></i><span class="text-slate-400">/</span><span id="breadcrumb">经营驾驶舱</span></div>
+                <span class="badge-blue">月度经营复盘</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-1.5 border border-slate-200 text-sm">
+                    <i class="fa fa-calendar text-slate-400"></i>
+                    <select id="monthSelect" class="bg-transparent text-slate-600 outline-none cursor-pointer text-sm">
+                        <option value="6" selected>2025年6月</option><option value="5">2025年5月</option><option value="4">2025年4月</option><option value="3">2025年3月</option>
+                    </select>
+                </div>
+                <span class="text-xs text-slate-400">数据截止 2025-07-03</span>
+                <div class="flex items-center gap-2 ml-2">
+                    <button class="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600"><i class="fa fa-file-text-o mr-1"></i>复盘报告</button>
+                    <button class="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600"><i class="fa fa-calendar-check-o mr-1"></i>会议复盘</button>
+                    <button class="px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600"><i class="fa fa-bullseye mr-1"></i>目标管理</button>
+                </div>
+                <button class="relative text-slate-400 hover:text-slate-600"><i class="fa fa-bell-o text-lg"></i><span class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] rounded-full flex items-center justify-center">3</span></button>
+                <div class="flex items-center gap-2 cursor-pointer hover:bg-slate-50 rounded-lg px-2 py-1"><div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-accent font-bold text-sm">张</div><div class="hidden sm:block"><div class="text-sm font-medium text-slate-700">张三</div><div class="text-xs text-slate-400">运营总监</div></div></div>
+            </div>
+        </div>
+    </header>
+    <div class="p-3 space-y-3 flex-1" id="dashboardContent">
+        <div class="text-center text-slate-400 py-20">加载中...</div>
+    </div>
+</div>
+
+<script>
+// ===== 菜单 =====
+var menuItems=[
+    {id:'dashboard',name:'经营驾驶舱',icon:'fa-tachometer',active:true},
+    {id:'target',name:'目标管理',icon:'fa-bullseye'},
+    {id:'online',name:'线上经营',icon:'fa-shopping-cart'},
+    {id:'product',name:'商品与品类',icon:'fa-th-large'},
+    {id:'market',name:'市场与竞品',icon:'fa-line-chart'},
+    {id:'offline',name:'线下大客户',icon:'fa-building'},
+    {id:'customer',name:'客户与复购',icon:'fa-refresh'},
+    {id:'finance',name:'财务经营',icon:'fa-jpy'},
+    {id:'supply',name:'仓储供应链',icon:'fa-truck'},
+    {id:'tech',name:'技术与售后',icon:'fa-cogs'},
+    {id:'meeting',name:'会议复盘',icon:'fa-calendar-check-o'},
+    {id:'task',name:'任务与协同',icon:'fa-tasks'},
+    {id:'org',name:'组织人效',icon:'fa-sitemap'},
+    {id:'data',name:'数据中心',icon:'fa-database'}
+];
+var activeMenu='dashboard',sidebarCollapsed=false;
+
+function renderMenu(){
+    var html='';
+    for(var i=0;i<menuItems.length;i++){
+        var item=menuItems[i];
+        var cls=item.active?'active':'';
+        var iconCls=item.active?'text-accent-light':'text-gray-500';
+        var dot=item.active?'<span class="ml-auto w-1.5 h-1.5 bg-accent-light rounded-full menu-text"></span>':'';
+        html+='<li><a href="javascript:void(0)" class="menu-item '+cls+' flex items-center gap-3 px-4 py-2.5 text-sm text-gray-300 hover:text-white" data-id="'+item.id+'" onclick="selectMenu(\''+item.id+'\')"><i class="fa '+item.icon+' menu-icon text-sm w-5 text-center '+iconCls+'"></i><span class="menu-text">'+item.name+'</span>'+dot+'</a></li>';
+    }
+    document.getElementById('menuList').innerHTML=html;
+}
+
+function selectMenu(id){
+    activeMenu=id;
+    var item=menuItems.find(function(m){return m.id===id;});
+    document.getElementById('breadcrumb').textContent=item?item.name:id;
+    var els=document.querySelectorAll('.menu-item');
+    for(var i=0;i<els.length;i++){
+        var el=els[i],isA=el.dataset.id===id;
+        el.classList.toggle('active',isA);
+        var ic=el.querySelector('.menu-icon');
+        if(ic){ic.classList.toggle('text-accent-light',isA);ic.classList.toggle('text-gray-500',!isA);}
+        var dot=el.querySelector('.w-1\\.5');
+        if(isA&&!dot){var s=document.createElement('span');s.className='ml-auto w-1.5 h-1.5 bg-accent-light rounded-full menu-text';el.appendChild(s);}
+        else if(!isA&&dot)dot.remove();
+    }
+}
+
+function toggleSidebar(){
+    sidebarCollapsed=!sidebarCollapsed;
+    var s=document.getElementById('sidebar'),b=document.getElementById('collapseBtn');
+    s.classList.toggle('collapsed',sidebarCollapsed);
+    var ic=b.querySelector('.menu-icon');
+    if(sidebarCollapsed){ic.classList.remove('fa-angle-double-left');ic.classList.add('fa-angle-double-right');}
+    else{ic.classList.remove('fa-angle-double-right');ic.classList.add('fa-angle-double-left');}
+    setTimeout(function(){resizeCharts();},350);
+}
+
+function resizeCharts(){
+    if(window.__charts)for(var k in window.__charts){if(window.__charts[k]&&window.__charts[k].resize)window.__charts[k].resize();}
+}
+
+// ===== 食品电商数据（12品类，6店铺，3-6月） =====
+var MONTHS=['3月','4月','5月','6月'];
+var STORES=['天猫旗舰店','京东自营','抖音小店','拼多多','小红书','线下团购'];
+var CATEGORIES=['休闲零食','调味品','饮料冲调','乳制品','冷冻食品','方便速食','烘焙糕点','粮油米面','糖果巧克力','坚果炒货','茶叶冲饮','其他食品'];
+
+var monthsData=[
+    {revenue:586,cost:381,gross:205,margin:158,profit:107,promoRate:12.3,returnRate:3.2,stock:218,collection:512},
+    {revenue:642,cost:411,gross:231,margin:175,profit:123,promoRate:11.8,returnRate:2.9,stock:235,collection:578},
+    {revenue:718,cost:460,gross:258,margin:198,profit:142,promoRate:11.2,returnRate:2.7,stock:252,collection:646},
+    {revenue:853,cost:541,gross:312,margin:238,profit:177,promoRate:10.5,returnRate:2.4,stock:268,collection:768}
+];
+var cur=monthsData[3],prev=monthsData[2];
+
+function sumArr(arr){var s=0;for(var i=0;i<arr.length;i++)s+=arr[i];return s;}
+
+var kpiDefs=[
+    {key:'revenue',label:'销售额',unit:'万元',icon:'fa-rmb',color:'#3b82f6',bg:'#eff6ff',target:800,better:'higher'},
+    {key:'gross',label:'产品毛利',unit:'万元',icon:'fa-bar-chart',color:'#22c55e',bg:'#f0fdf4',target:290,better:'higher'},
+    {key:'margin',label:'边际毛利',unit:'万元',icon:'fa-line-chart',color:'#06b6d4',bg:'#ecfeff',target:220,better:'higher'},
+    {key:'profit',label:'净利润',unit:'万元',icon:'fa-diamond',color:'#8b5cf6',bg:'#f5f3ff',target:165,better:'higher'},
+    {key:'promoRate',label:'推广费率',unit:'%',icon:'fa-bullhorn',color:'#f59e0b',bg:'#fffbeb',target:12,better:'lower'},
+    {key:'returnRate',label:'退货率',unit:'%',icon:'fa-undo',color:'#ef4444',bg:'#fef2f2',target:3,better:'lower'},
+    {key:'stock',label:'库存资金占用',unit:'万元',icon:'fa-archive',color:'#f97316',bg:'#fff7ed',target:250,better:'lower'},
+    {key:'collection',label:'回款金额',unit:'万元',icon:'fa-credit-card',color:'#14b8a6',bg:'#f0fdfa',target:750,better:'higher'},
+    {key:'redIssues',label:'红灯问题',unit:'个',icon:'fa-exclamation-triangle',color:'#ef4444',bg:'#fef2f2',type:'count'},
+];
+
+// 6店铺 × 12品类 热力矩阵（6月，万元）
+var heatData=[
+    [48,22,35,28,12, 8,10, 5, 4, 5, 2,1],
+    [30,28,18,22,15,10, 6,12, 3, 4, 1,1],
+    [45,15,28,12,10,18, 8, 3,12,14, 3,2],
+    [22,18,12,10, 8,20, 5,15, 3, 5, 1,1],
+    [18, 8,15,10, 5, 6,18, 2, 8, 6, 3,1],
+    [ 8,12, 5, 8,12,10, 3,14, 2, 3, 1,2],
+];
+
+var redIssues=[
+    {rank:1,issue:'天猫旗舰店退货率超目标0.8pp，需排查休闲零食品控',owner:'王小明',dept:'运营部',status:'处理中',severity:'high'},
+    {rank:2,issue:'库存资金占用268万超目标18万，冷冻食品及粮油积压',owner:'李芳',dept:'供应链',status:'处理中',severity:'high'},
+    {rank:3,issue:'拼多多渠道销售额120万，连续两月未达标，方便速食下滑',owner:'张伟',dept:'渠道部',status:'待处理',severity:'medium'},
+    {rank:4,issue:'抖音投流ROI降至1.8，坚果炒货及糖果巧克力转化偏低',owner:'陈静',dept:'市场部',status:'处理中',severity:'medium'},
+    {rank:5,issue:'烘焙糕点新品"黄油曲奇"上架延迟，原定6/15未到位',owner:'赵磊',dept:'采购部',status:'待处理',severity:'medium'},
+    {rank:6,issue:'线下团购回款周期延长至48天，较上月+6天',owner:'刘洋',dept:'财务部',status:'观察中',severity:'low'},
+    {rank:7,issue:'乳制品临期库存占比升至8%，希腊酸奶需促销清仓',owner:'孙悦',dept:'运营部',status:'处理中',severity:'medium'},
+    {rank:8,issue:'京东自营粮油米面品类搜索排名下滑3位，流量降15%',owner:'周杰',dept:'市场部',status:'观察中',severity:'low'},
+    {rank:9,issue:'茶叶冲饮品类整体动销偏低，月销仅11万，需评估汰换',owner:'吴婷',dept:'采购部',status:'待处理',severity:'low'},
+    {rank:10,issue:'抖音小店达人合作到期4个，坚果炒货及糖果线需续约',owner:'郑浩',dept:'渠道部',status:'观察中',severity:'low'},
+];
+
+var storeColors=['#3b82f6','#22c55e','#f59e0b','#8b5cf6','#ec4899','#14b8a6'];
+var storeDataArr=[];
+var storeManualData=[
+    {name:'天猫旗舰店', revenueRate:112.5, marginRatePct:108.8},
+    {name:'京东自营',   revenueRate:91.2,  marginRatePct:106.5},
+    {name:'抖音小店',   revenueRate:118.3, marginRatePct:116.2},
+    {name:'拼多多',     revenueRate:85.8,  marginRatePct:89.5},
+    {name:'小红书',     revenueRate:106.0, marginRatePct:94.2},
+    {name:'线下团购',   revenueRate:88.5,  marginRatePct:112.8},
+];
+for(var si=0;si<storeManualData.length;si++){
+    var sm=storeManualData[si];
+    storeDataArr.push({name:sm.name,revenueRate:sm.revenueRate,marginRatePct:sm.marginRatePct,color:storeColors[si]});
+}
+
+var starProducts=[
+    {name:'炭烧猪肉脯 200g',cat:'休闲零食',stores:[68,42,55,32,22,8],total:227,growth:'+32%'},
+    {name:'麻辣小龙虾调料 300g',cat:'调味品',stores:[32,38,25,28,12,15],total:150,growth:'+28%'},
+    {name:'冷萃咖啡液 30条',cat:'饮料冲调',stores:[45,22,38,18,20,5],total:148,growth:'+45%'},
+    {name:'希腊酸奶 1kg',cat:'乳制品',stores:[38,28,16,12,14,10],total:118,growth:'+18%'},
+    {name:'五常大米 5kg',cat:'粮油米面',stores:[6,18,4,22,2,18],total:70,growth:'+15%'},
+];
+
+var newProducts=[
+    {name:'低脂鸡胸肉肠 500g',cat:'休闲零食',launch:'2025-05-15',stage:'成长期',days:46,revenue:38,target:50,status:'正常',scolor:'#22c55e',action:'加大天猫/抖音推广投放'},
+    {name:'松露巧克力礼盒 300g',cat:'糖果巧克力',launch:'2025-05-20',stage:'导入期',days:41,revenue:16,target:28,status:'预警',scolor:'#f59e0b',action:'增加直播间赠品，提升转化'},
+    {name:'益生菌固体饮料 20条',cat:'饮料冲调',launch:'2025-06-10',stage:'导入期',days:20,revenue:28,target:25,status:'正常',scolor:'#22c55e',action:'保持现有推广节奏'},
+    {name:'有机核桃仁 400g',cat:'坚果炒货',launch:'2025-04-20',stage:'成长期',days:71,revenue:45,target:55,status:'正常',scolor:'#22c55e',action:'拓展京东/拼多多渠道'},
+    {name:'云南普洱生茶 357g',cat:'茶叶冲饮',launch:'2025-06-01',stage:'导入期',days:29,revenue:5,target:12,status:'预警',scolor:'#f59e0b',action:'增加达人带货，降价促销引流'},
+];
+
+var gapPlans=[
+    {item:'线下团购',gap:15,compensated:8,actions:'拓展社区团购合作+企业集采'},
+    {item:'京东自营',gap:10,compensated:6,actions:'搜索优化+PLUS会员专享价'},
+    {item:'小红书',gap:10,compensated:7,actions:'笔记投流+店播加时长'},
+    {item:'天猫旗舰店',gap:5,compensated:4,actions:'618返场活动+直播专场'},
+    {item:'拼多多',gap:5,compensated:2,actions:'百亿补贴报名+秒杀频道'},
+    {item:'抖音小店',gap:2,compensated:1,actions:'达人合作续约+千川投流补充'},
+];
+
+var meetingTasks=[
+    {resolution:'优化退货流程，建立质量反馈闭环',owner:'王小明',deadline:'2025-07-15',status:'进行中'},
+    {resolution:'冷冻食品及粮油库存促销方案制定与执行',owner:'李芳',deadline:'2025-07-10',status:'进行中'},
+    {resolution:'拼多多渠道专项提升计划',owner:'张伟',deadline:'2025-07-20',status:'待启动'},
+    {resolution:'抖音坚果及糖果品类ROI优化方案',owner:'陈静',deadline:'2025-07-08',status:'已完成'},
+    {resolution:'烘焙糕点新品供应商备选方案',owner:'赵磊',deadline:'2025-07-05',status:'已完成'},
+    {resolution:'茶叶冲饮品类汰换评估报告',owner:'吴婷',deadline:'2025-07-12',status:'进行中'},
+];
+
+// ===== 构建仪表盘 HTML =====
+function buildLayoutHTML(){
+    return ''+
+    // 第1行：KPI
+    '<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-9 gap-2" id="kpiRow"></div>'+
+
+    // 第2行：象限图(55%) + 树图&红灯(45%)
+    '<div class="flex flex-col lg:flex-row gap-3 items-stretch">'+
+        '<div class="lg:w-[55%] bg-white rounded-xl shadow-sm p-3 flex flex-col">'+
+            '<div class="flex items-center justify-between mb-2"><h3 class="section-title">销售达成率 × 边际毛利达成率</h3><span class="text-xs text-slate-400">各店铺象限分析</span></div>'+
+            '<div class="relative w-full flex-1" style="min-height:270px"><canvas id="quadrantChart"></canvas></div>'+
+        '</div>'+
+        '<div class="lg:w-[45%] flex flex-col gap-3">'+
+            '<div class="bg-white rounded-xl shadow-sm p-3 flex-1 flex flex-col">'+
+                '<div class="flex items-center justify-between mb-2"><h3 class="section-title">业务规模地图</h3><span class="text-xs text-slate-400">按店铺 | 万元</span></div>'+
+                '<div id="treemapArea" class="relative flex-1" style="min-height:180px;overflow:hidden"></div>'+
+            '</div>'+
+            '<div class="bg-white rounded-xl shadow-sm p-3 flex flex-col">'+
+                '<div class="flex items-center justify-between mb-1.5"><h3 class="section-title">红灯问题 TOP10</h3><span class="badge-red">'+redIssues.filter(function(r){return r.severity==='high'}).length+'个高危</span></div>'+
+                '<div class="overflow-y-auto flex-1" style="max-height:180px" id="redIssuesList"></div>'+
+            '</div>'+
+        '</div>'+
+    '</div>'+
+
+    // 上排：热力矩阵(左1/2跨两行) + 星品(右1/2上) + 会议(右1/2下)
+    '<div class="grid grid-cols-1 lg:grid-cols-2 gap-3">'+
+        '<div class="lg:row-span-2 bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-2"><h3 class="section-title">店铺 × 品类 销售占比</h3><span class="text-xs text-slate-400">6月 | 万元</span></div><div class="overflow-x-auto flex-1" id="heatmapArea"></div></div>'+
+        '<div class="flex flex-col gap-3">'+
+            '<div class="bg-white rounded-xl shadow-sm p-3 flex-1"><div class="flex items-center justify-between mb-1.5"><h3 class="section-title">明星产品跨店表现 TOP5</h3><span class="text-xs text-slate-400">6月累计 | 万元</span></div><div class="overflow-x-auto" id="starProductArea"></div></div>'+
+            '<div class="bg-white rounded-xl shadow-sm p-3 flex-1"><div class="flex items-center justify-between mb-1.5"><h3 class="section-title">会议决议与任务</h3><span class="text-xs text-slate-400">'+meetingTasks.length+'项</span></div><div class="overflow-x-auto" id="meetingTasksArea"></div></div>'+
+        '</div>'+
+    '</div>'+
+    // 下排：目标2/12 + 新品7/12 + 补差3/12
+    '<div class="grid grid-cols-1 lg:grid-cols-12 gap-3">'+
+        '<div class="lg:col-span-2 bg-white rounded-xl shadow-sm p-3 flex flex-col"><h3 class="section-title mb-2">目标完成预测</h3><div class="flex flex-col gap-2 flex-1" id="gaugeRings"></div></div>'+
+        '<div class="lg:col-span-7 bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-1.5"><h3 class="section-title">新品周期跟踪</h3><span class="text-xs text-slate-400" id="newProductMonthLabel">6月数据</span></div><div class="overflow-x-auto flex-1" id="newProductArea"></div></div>'+
+        '<div class="lg:col-span-3 bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-2"><h3 class="section-title">本月补差计划</h3><span class="text-xs text-slate-400">缺口跟踪</span></div><div class="space-y-2 flex-1" id="gapPlanArea"></div></div>'+
+    '</div>';
+}
+
+// ===== 渲染 KPI 卡片 =====
+function renderKPIs(){
+    var html='';
+    for(var i=0;i<kpiDefs.length;i++){
+        var k=kpiDefs[i];
+        if(k.type==='count'){
+            var count=redIssues.filter(function(r){return r.severity==='high'}).length;
+            var prevCount=4,change=count-prevCount,up=change<=0;
+            html+='<div class="bg-white rounded-xl shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow border-l-4 border-red-400">'+
+                '<div class="flex items-center justify-between mb-2"><span class="text-xs text-slate-500 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+                '<div class="text-xl font-bold text-red-500 mb-2">'+count+'<span class="text-sm text-slate-400 font-normal"> 个</span></div>'+
+                '<div class="flex flex-col gap-0.5 text-xs"><div class="flex items-center justify-between"><span class="text-slate-400">高危待处理</span><span class="font-semibold text-red-500">'+count+'个</span></div>'+
+                '<div class="flex items-center gap-1"><span class="text-slate-400">环比</span><span class="'+(up?'kpi-up':'kpi-down')+' font-medium">'+(up?'↓':'↑')+Math.abs(change)+'个</span></div></div></div>';
+            continue;
+        }
+        var val=cur[k.key],prevVal=prev[k.key];
+        var isPct=k.unit==='%';
+        var rate=isPct?null:(val/k.target*100);
+        var mom=prevVal?((val-prevVal)/prevVal*100):0;
+        var momUp=mom>=0;
+        var ok=isPct?(k.better==='lower'?val<=k.target:val>=k.target):rate>=100;
+        var statusCls=ok?'kpi-up':(rate&&rate>=90?'kpi-warn':'kpi-down');
+        var displayVal=isPct?val.toFixed(1)+'%':'¥'+val.toFixed(0);
+        var targetDisplay=isPct?(k.better==='lower'?'≤'+k.target+'%':'≥'+k.target+'%'):'¥'+k.target+'万';
+        var rateHTML='';
+        if(!isPct)rateHTML='<span class="'+statusCls+' font-semibold">达成 '+rate.toFixed(1)+'%</span>';
+        else rateHTML='<span class="'+(ok?'kpi-up':'kpi-down')+' font-semibold">'+(ok?'达标':'超标')+'</span>';
+        html+='<div class="bg-white rounded-xl shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow">'+
+            '<div class="flex items-center justify-between mb-2"><span class="text-xs text-slate-500 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+            '<div class="text-xl font-bold text-slate-800 mb-2">'+displayVal+'</div>'+
+            '<div class="flex flex-col gap-0.5 text-xs"><div class="flex items-center justify-between"><span class="text-slate-400">目标 '+targetDisplay+'</span>'+rateHTML+'</div>'+
+            '<div class="flex items-center gap-1"><span class="text-slate-400">环比</span><span class="'+(momUp?'kpi-up':'kpi-down')+' font-medium">'+(momUp?'+':'')+mom.toFixed(1)+'%</span></div></div></div>';
+    }
+    document.getElementById('kpiRow').innerHTML=html;
+}
+
+// ===== 象限图 =====
+function renderQuadrantChart(){
+    var ctx=document.getElementById('quadrantChart').getContext('2d');
+    var datasets=[];
+    for(var i=0;i<storeDataArr.length;i++){
+        var sd=storeDataArr[i];
+        datasets.push({
+            label:sd.name,
+            data:[{x:sd.revenueRate,y:sd.marginRatePct}],
+            backgroundColor:sd.color,
+            borderColor:'#fff',
+            borderWidth:2,
+            pointRadius:5,
+            pointHoverRadius:9,
+        });
+    }
+    var chart=new Chart(ctx,{
+        type:'scatter',
+        data:{datasets:datasets},
+        options:{
+            responsive:true,maintainAspectRatio:false,
+            plugins:{
+                legend:{position:'bottom',labels:{usePointStyle:true,boxWidth:8,font:{size:11},padding:16,pointStyle:'circle'}},
+                tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': 销售达成'+ctx.parsed.x+'% | 毛利达成'+ctx.parsed.y+'%';}}},
+            },
+            scales:{
+                x:{title:{display:true,text:'销售达成率 (%)',font:{size:11}},min:80,max:125,grid:{color:'#e2e8f0'},ticks:{callback:function(v){return v+'%';},font:{size:10}}},
+                y:{title:{display:true,text:'边际毛利达成率 (%)',font:{size:11}},min:80,max:125,grid:{color:'#e2e8f0'},ticks:{callback:function(v){return v+'%';},font:{size:10}}},
+            }
+        },
+        plugins:[{
+            id:'quadrantBg',
+            beforeDraw:function(chart){
+                var c=chart,ctx=c.ctx,x=c.scales.x,y=c.scales.y,ca=c.chartArea;
+                var cx=x.getPixelForValue(100),cy=y.getPixelForValue(100);
+                ctx.save();
+                // 四个象限背景色
+                var quads=[
+                    {x:cx,y:ca.top,w:ca.right-cx,h:cy-ca.top,color:'rgba(34,197,94,0.06)'},    // 右上: 高达成高毛利
+                    {x:ca.left,y:ca.top,w:cx-ca.left,h:cy-ca.top,color:'rgba(59,130,246,0.04)'}, // 左上: 低达成高毛利
+                    {x:ca.left,y:cy,w:cx-ca.left,h:ca.bottom-cy,color:'rgba(239,68,68,0.05)'},   // 左下: 低达成低毛利
+                    {x:cx,y:cy,w:ca.right-cx,h:ca.bottom-cy,color:'rgba(245,158,11,0.05)'},      // 右下: 高达成低毛利
+                ];
+                for(var qi=0;qi<quads.length;qi++){
+                    var q=quads[qi];
+                    ctx.fillStyle=q.color;
+                    ctx.fillRect(q.x,q.y,q.w,q.h);
+                }
+                // 十字虚线
+                ctx.strokeStyle='rgba(148,163,184,0.5)';ctx.lineWidth=2;ctx.setLineDash([8,5]);
+                ctx.beginPath();ctx.moveTo(cx,ca.top);ctx.lineTo(cx,ca.bottom);ctx.stroke();
+                ctx.beginPath();ctx.moveTo(ca.left,cy);ctx.lineTo(ca.right,cy);ctx.stroke();
+                ctx.restore();
+            },
+            afterDraw:function(chart){
+                var c=chart,ctx=c.ctx,ca=c.chartArea;
+                ctx.save();
+                // 象限标签
+                ctx.font='11px sans-serif';ctx.setLineDash([]);
+                ctx.fillStyle='rgba(34,197,94,0.55)';ctx.fillText('高达成高毛利',ca.right-115,ca.top+16);
+                ctx.fillStyle='rgba(59,130,246,0.45)';ctx.fillText('低达成高毛利',ca.left+4,ca.top+16);
+                ctx.fillStyle='rgba(239,68,68,0.45)';ctx.fillText('低达成低毛利',ca.left+4,ca.bottom-4);
+                ctx.fillStyle='rgba(245,158,11,0.45)';ctx.fillText('高达成低毛利',ca.right-115,ca.bottom-4);
+                // 每个点的标签——按象限自动调整方向
+                ctx.shadowColor='#fff';ctx.shadowBlur=3;
+                for(var di=0;di<chart.data.datasets.length;di++){
+                    var meta2=chart.getDatasetMeta(di);
+                    if(meta2&&meta2.data&&meta2.data[0]){
+                        var pt=meta2.data[0];
+                        var sd=storeDataArr[di];
+                        // 下半区标签放点下方，上半区放点上方
+                        var below=sd.marginRatePct<100;
+                        var yOff=below?18:-18;
+                        var yOff2=below?28:-8;
+                        ctx.textAlign='center';
+                        ctx.fillStyle=sd.color;ctx.font='bold 10px sans-serif';
+                        ctx.fillText(sd.name,pt.x,pt.y+yOff);
+                        ctx.fillStyle='#64748b';ctx.font='9px sans-serif';
+                        ctx.fillText(sd.revenueRate+'% / '+sd.marginRatePct+'%',pt.x,pt.y+yOff2);
+                    }
+                }
+                ctx.shadowColor='transparent';ctx.shadowBlur=0;
+                ctx.textAlign='start';
+                ctx.restore();
+            }
+        }]
+    });
+    if(!window.__charts)window.__charts={};
+    window.__charts.quadrant=chart;
+}
+
+// ===== 矩形树图 Treemap（百分比）—— 2行×3列 偏正方形 =====
+function renderTreemap(){
+    var colors=['#3b82f6','#22c55e','#f59e0b','#8b5cf6','#ec4899','#14b8a6'];
+    var stores=[];
+    var totalAll=0;
+    for(var si=0;si<STORES.length;si++){
+        var t=sumArr(heatData[si]);
+        stores.push({name:STORES[si],total:t,color:colors[si]});
+        totalAll+=t;
+    }
+    stores.sort(function(a,b){return b.total-a.total;});
+
+    // 分两行：前3大 占55%高，后3 占45%高
+    var row1=stores.slice(0,3), row2=stores.slice(3,6);
+    var r1Total=row1.reduce(function(s,x){return s+x.total;},0);
+    var r2Total=row2.reduce(function(s,x){return s+x.total;},0);
+
+    function rowHTML(row,rowTotal,hPct){
+        var h='';
+        for(var i=0;i<row.length;i++){
+            var s=row[i];
+            var pct=+(s.total/totalAll*100).toFixed(1);
+            var w=s.total/rowTotal*100;
+            var flexVal=i===row.length-1?'flex:1':'flex:0 0 '+w.toFixed(1)+'%';
+            h+='<div class="flex flex-col items-center justify-center text-white text-center cursor-pointer hover:brightness-110 transition-all" style="'+flexVal+';background:'+s.color+';min-width:55px" title="'+s.name+': ¥'+s.total+'万 ('+pct+'%)">'+
+                '<span class="font-semibold text-sm whitespace-nowrap">'+s.name+'</span>'+
+                '<span class="font-extrabold text-xl">'+pct+'%</span>'+
+                '<span class="text-xs opacity-80">¥'+s.total+'万</span>'+
+            '</div>';
+        }
+        return h;
+    }
+
+    var html='<div style="display:flex;flex-direction:column;width:100%;height:100%;min-height:220px;border-radius:10px;overflow:hidden;gap:2px">'+
+        '<div style="display:flex;flex:0 0 55%;gap:2px">'+rowHTML(row1,r1Total,55)+'</div>'+
+        '<div style="display:flex;flex:0 0 45%;gap:2px">'+rowHTML(row2,r2Total,45)+'</div>'+
+    '</div>';
+    document.getElementById('treemapArea').innerHTML=html;
+}
+
+// ===== 红灯问题 =====
+function renderRedIssues(){
+    var html='';
+    for(var i=0;i<redIssues.length;i++){
+        var r=redIssues[i];
+        var sevIcon='';
+        if(r.severity==='high')sevIcon='<i class="fa fa-circle text-red-500 text-[8px]"></i>';
+        else if(r.severity==='medium')sevIcon='<i class="fa fa-circle text-yellow-500 text-[8px]"></i>';
+        else sevIcon='<i class="fa fa-circle text-slate-300 text-[8px]"></i>';
+        var stCls='';
+        if(r.status==='处理中')stCls='badge-yellow';
+        else if(r.status==='待处理')stCls='badge-red';
+        else if(r.status==='已完成')stCls='badge-green';
+        else stCls='badge-blue';
+        html+='<div class="flex items-start gap-2 py-2 border-b border-slate-50 text-xs">'+
+            '<span class="text-slate-400 font-mono w-4 flex-shrink-0">'+r.rank+'</span>'+
+            '<div class="flex-1 min-w-0"><div class="flex items-center gap-1.5"><span class="text-slate-700 truncate block">'+r.issue+'</span>'+sevIcon+'</div>'+
+            '<div class="flex items-center gap-2 mt-0.5 text-slate-400"><span>'+r.owner+' · '+r.dept+'</span><span class="'+stCls+'">'+r.status+'</span></div></div></div>';
+    }
+    document.getElementById('redIssuesList').innerHTML=html;
+}
+
+// ===== 热力矩阵（品类按销量降序） =====
+function renderHeatmap(){
+    var colTotal=[],heatMax=0,grandTotal=0;
+    for(var ci=0;ci<CATEGORIES.length;ci++){var s=0;for(var ri=0;ri<heatData.length;ri++)s+=heatData[ri][ci];colTotal.push(s);grandTotal+=s;}
+    for(var ri2=0;ri2<heatData.length;ri2++){for(var ci2=0;ci2<heatData[ri2].length;ci2++){if(heatData[ri2][ci2]>heatMax)heatMax=heatData[ri2][ci2];}}
+    var rowTotals=[];
+    for(var ri3=0;ri3<heatData.length;ri3++)rowTotals.push(sumArr(heatData[ri3]));
+
+    // 按品类销量降序排列
+    var colOrder=[];
+    for(var ci=0;ci<CATEGORIES.length;ci++)colOrder.push({name:CATEGORIES[ci],total:colTotal[ci],idx:ci});
+    colOrder.sort(function(a,b){return b.total-a.total;});
+
+    var html='<table class="text-xs w-full border-separate" style="border-spacing:3px"><thead><tr><th class="p-1.5 text-slate-400 font-medium text-left w-16">店铺</th>';
+    for(var oi=0;oi<colOrder.length;oi++)html+='<th class="p-1.5 text-slate-400 font-medium text-center">'+colOrder[oi].name+'</th>';
+    html+='<th class="p-1.5 text-slate-600 font-semibold text-center bg-slate-50 rounded">合计</th></tr></thead><tbody>';
+    for(var ri4=0;ri4<heatData.length;ri4++){
+        html+='<tr><td class="p-1.5 text-slate-700 font-semibold text-left">'+STORES[ri4]+'</td>';
+        for(var oi2=0;oi2<colOrder.length;oi2++){
+            var ci4=colOrder[oi2].idx;
+            var val=heatData[ri4][ci4];
+            var pct=(val/grandTotal*100).toFixed(1);
+            var intensity=Math.round(val/heatMax*100);
+            var r,g,b;
+            if(intensity>70){r=37;g=99;b=235;}
+            else if(intensity>40){r=59;g=130;b=246;}
+            else if(intensity>20){r=96;g=165;b=250;}
+            else if(intensity>8){r=147;g=197;b=253;}
+            else {r=191;g=219;b=254;}
+            var alpha=0.35+intensity/100*0.55;
+            var bg='rgba('+r+','+g+','+b+','+alpha.toFixed(2)+')';
+            var tc=intensity>45?'text-white':'text-slate-600';
+            var tcSub=intensity>45?'text-blue-100':'text-slate-400';
+            html+='<td class="heat-cell text-center rounded-md cursor-default '+tc+'" style="background:'+bg+';padding:4px 2px;min-width:52px">'+
+                '<div class="font-bold text-xs">¥'+val+'万</div>'+
+                '<div class="'+tcSub+'" style="font-size:9px">'+pct+'%</div></td>';
+        }
+        var rPct=(rowTotals[ri4]/grandTotal*100).toFixed(1);
+        html+='<td class="text-center font-bold text-slate-800 bg-slate-50 rounded-md" style="padding:4px 2px;min-width:48px"><div class="text-xs">¥'+rowTotals[ri4]+'万</div><div class="text-slate-400" style="font-size:9px">'+rPct+'%</div></td></tr>';
+    }
+    html+='<tr class="bg-slate-100"><td class="p-1.5 text-slate-600 font-bold text-left rounded-l-md">合计</td>';
+    for(var oi3=0;oi3<colOrder.length;oi3++){
+        var ct=colOrder[oi3].total;
+        var cPct=(ct/grandTotal*100).toFixed(1);
+        html+='<td class="text-center font-bold text-slate-800 rounded-md" style="padding:4px 2px"><div class="text-xs">¥'+ct+'万</div><div class="text-slate-500" style="font-size:9px">'+cPct+'%</div></td>';
+    }
+    html+='<td class="text-center font-extrabold text-slate-800 bg-slate-200 rounded-md" style="padding:4px 2px"><div class="text-xs">¥'+grandTotal+'万</div><div class="text-slate-500" style="font-size:9px">100%</div></td></tr></tbody></table>';
+    document.getElementById('heatmapArea').innerHTML=html;
+}
+
+// ===== 明星产品 =====
+function renderStarProducts(){
+    var html='<table class="text-xs w-full"><thead><tr class="border-b border-slate-100"><th class="p-2 text-left text-slate-400 font-medium">产品</th>';
+    var shortStores=['天猫','京东','抖音','拼多多','小红书','团购'];
+    for(var i=0;i<shortStores.length;i++)html+='<th class="p-2 text-center text-slate-400 font-medium">'+shortStores[i]+'</th>';
+    html+='<th class="p-2 text-center text-slate-500 font-semibold">合计</th><th class="p-2 text-center text-slate-400 font-medium">增长</th></tr></thead><tbody>';
+    for(var j=0;j<starProducts.length;j++){
+        var p=starProducts[j];
+        html+='<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-2 text-slate-700"><div class="font-medium">'+p.name+'</div><div class="text-[10px] text-slate-400">'+p.cat+'</div></td>';
+        for(var k=0;k<p.stores.length;k++)html+='<td class="p-2 text-center text-slate-600">'+p.stores[k]+'</td>';
+        html+='<td class="p-2 text-center font-bold text-slate-800">¥'+p.total+'万</td><td class="p-2 text-center"><span class="badge-green">'+p.growth+'</span></td></tr>';
+    }
+    html+='</tbody></table>';
+    document.getElementById('starProductArea').innerHTML=html;
+}
+
+// ===== 新品跟踪 =====
+function renderNewProducts(){
+    var html='<table class="text-xs w-full"><thead><tr class="border-b border-slate-100"><th class="p-1 text-left text-slate-400 font-medium whitespace-nowrap">新品名称</th><th class="p-1 text-center text-slate-400 font-medium whitespace-nowrap">上市</th><th class="p-1 text-center text-slate-400 font-medium whitespace-nowrap">天数</th><th class="p-1 text-center text-slate-400 font-medium whitespace-nowrap">阶段</th><th class="p-1 text-right text-slate-400 font-medium whitespace-nowrap">收入</th><th class="p-1 text-right text-slate-400 font-medium whitespace-nowrap">达成</th><th class="p-1 text-center text-slate-400 font-medium whitespace-nowrap">判定</th><th class="p-1 text-left text-slate-400 font-medium whitespace-nowrap">建议动作</th></tr></thead><tbody>';
+    for(var i=0;i<newProducts.length;i++){
+        var p=newProducts[i];
+        var achieve=p.revenue/p.target*100;
+        var aCls='';
+        if(achieve>=100)aCls='kpi-up';
+        else if(achieve>=70)aCls='kpi-warn';
+        else aCls='kpi-down';
+        var sCls='';
+        if(p.status==='正常')sCls='badge-green';
+        else if(p.status==='预警')sCls='badge-yellow';
+        else sCls='badge-red';
+        html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+            '<td class="p-1 text-slate-700 font-medium whitespace-nowrap">'+p.name+'</td>'+
+            '<td class="p-1 text-center text-slate-500 whitespace-nowrap">'+p.launch+'</td>'+
+            '<td class="p-1 text-center text-slate-600 whitespace-nowrap">'+p.days+'天</td>'+
+            '<td class="p-1 text-center whitespace-nowrap"><span class="badge-blue">'+p.stage+'</span></td>'+
+            '<td class="p-1 text-right text-slate-700 font-semibold whitespace-nowrap">¥'+p.revenue+'万</td>'+
+            '<td class="p-1 text-right whitespace-nowrap '+aCls+'">'+Math.round(achieve)+'%</td>'+
+            '<td class="p-1 text-center whitespace-nowrap"><span class="'+sCls+'">'+p.status+'</span></td>'+
+            '<td class="p-1 text-slate-500 text-[10px]">'+p.action+'</td>'+
+        '</tr>';
+    }
+    html+='</tbody></table>';
+    document.getElementById('newProductArea').innerHTML=html;
+}
+
+// ===== 目标预测 =====
+function renderGaugeChart(){
+    var target=800,done=cur.revenue,pct=+(done/target*100).toFixed(1);
+    var daysElapsed=26,totalDays=31;
+    var predicted=Math.round(done/daysElapsed*totalDays);
+    var predictPct=+(predicted/target*100).toFixed(1);
+    var remainDays=totalDays-daysElapsed;
+    var profitRate=+(cur.profit/cur.revenue*100).toFixed(1);
+    var collectRate=+(cur.collection/cur.revenue*100).toFixed(1);
+    var totalGap=sumArr(gapPlans.map(function(g){return g.gap-g.compensated;}));
+
+    var rings=[
+        {id:'gaugeChart1',val:done,total:target,label:'目标完成率',pct:pct+'%',color:'#3b82f6',
+         detail:[{k:'月度目标',v:'¥'+target+'万'},{k:'当前完成',v:'¥'+done+'万'},{k:'预计月末',v:'¥'+predicted+'万 ('+predictPct+'%)'},{k:'剩余',v:remainDays+'天'}]},
+        {id:'gaugeChart2',val:cur.profit,total:cur.revenue,label:'净利润率',pct:profitRate+'%',color:'#22c55e',
+         detail:[{k:'净利润',v:'¥'+cur.profit+'万'},{k:'营业收入',v:'¥'+cur.revenue+'万'},{k:'环比',v:'+'+((cur.profit-prev.profit)/prev.profit*100).toFixed(1)+'%'}]},
+        {id:'gaugeChart3',val:cur.collection,total:cur.revenue,label:'回款率',pct:collectRate+'%',color:'#8b5cf6',
+         detail:[{k:'回款金额',v:'¥'+cur.collection+'万'},{k:'应收账款',v:'¥'+(cur.revenue-cur.collection)+'万'},{k:'店铺缺口',v:'¥'+totalGap+'万'}]},
+    ];
+
+    var html='';
+    for(var ri=0;ri<rings.length;ri++){
+        var r=rings[ri];
+        html+='<div class="flex items-center gap-2 flex-1"><div class="relative flex-shrink-0" style="width:88px;height:88px"><canvas id="'+r.id+'"></canvas></div>'+
+            '<div class="flex-1 text-xs"><div class="font-semibold text-slate-700 mb-0.5">'+r.label+' <span class="text-lg font-extrabold" style="color:'+r.color+'">'+r.pct+'</span></div>'+
+            '<div class="flex flex-wrap gap-x-3 gap-y-0 text-[10px] text-slate-500">';
+        for(var di=0;di<r.detail.length;di++){
+            html+='<span>'+r.detail[di].k+' <b class="text-slate-700">'+r.detail[di].v+'</b></span>';
+        }
+        html+='</div></div></div>';
+    }
+    document.getElementById('gaugeRings').innerHTML=html;
+
+    // 渲染 canvas
+    for(var ri2=0;ri2<rings.length;ri2++){
+        (function(r){
+        var ctx=document.getElementById(r.id).getContext('2d');
+        var chart=new Chart(ctx,{
+            type:'doughnut',
+            data:{datasets:[{data:[r.val,Math.max(0,r.total-r.val)],backgroundColor:[r.color,'#e2e8f0'],borderWidth:0,borderRadius:10,cutout:'68%'}]},
+            options:{responsive:true,maintainAspectRatio:true,plugins:{tooltip:{enabled:false},legend:{display:false}}},
+            plugins:[{id:r.id+'text',afterDraw:function(chart){
+                var ctx=chart.ctx,w=chart.width,h=chart.height;
+                ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+                ctx.fillStyle='#1e293b';ctx.font='bold 16px sans-serif';ctx.fillText(r.pct,w/2,h/2);
+                ctx.restore();
+            }}]
+        });
+        if(!window.__charts)window.__charts={};
+        window.__charts[r.id]=chart;
+        })(rings[ri2]);
+    }
+}
+
+function renderGapPlans(){
+    var html='';
+    var sorted=gapPlans.slice().sort(function(a,b){return (b.gap-b.compensated)-(a.gap-a.compensated);});
+    for(var i=0;i<sorted.length;i++){
+        var g=sorted[i];
+        var pct=Math.round(g.compensated/g.gap*100);
+        var remaining=g.gap-g.compensated;
+        var barColor=remaining<=0?'bg-green-500':(pct>=50?'bg-yellow-500':'bg-red-500');
+        html+='<div><div class="flex items-center justify-between text-xs mb-1"><span class="text-slate-600 font-medium">'+g.item+'</span><span class="text-slate-400">差¥'+remaining+'万</span></div>'+
+            '<div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden"><div class="progress-fill '+barColor+' h-full rounded-full flex items-center justify-end pr-2 text-white text-[10px] font-medium" style="width:'+pct+'%">'+(pct>=20?pct+'%':'')+'</div></div>'+
+            '<div class="text-[10px] text-slate-400 mt-0.5 truncate">'+g.actions+'</div></div>';
+    }
+    document.getElementById('gapPlanArea').innerHTML=html;
+}
+
+// ===== 会议决议 =====
+function renderMeetingTasks(){
+    var html='<table class="text-xs w-full"><thead><tr class="border-b border-slate-100"><th class="p-2 text-left text-slate-400 font-medium">决议事项</th><th class="p-2 text-center text-slate-400 font-medium">负责人</th><th class="p-2 text-center text-slate-400 font-medium">截止</th><th class="p-2 text-center text-slate-400 font-medium">状态</th></tr></thead><tbody>';
+    for(var i=0;i<meetingTasks.length;i++){
+        var t=meetingTasks[i];
+        var stCls='';
+        if(t.status==='进行中')stCls='badge-yellow';
+        else if(t.status==='待启动')stCls='badge-red';
+        else if(t.status==='已完成')stCls='badge-green';
+        else stCls='badge-blue';
+        html+='<tr class="border-b border-slate-50 hover:bg-slate-50"><td class="p-2 text-slate-700">'+t.resolution+'</td><td class="p-2 text-center text-slate-600">'+t.owner+'</td><td class="p-2 text-center text-slate-500">'+t.deadline+'</td><td class="p-2 text-center"><span class="'+stCls+'">'+t.status+'</span></td></tr>';
+    }
+    html+='</tbody></table>';
+    document.getElementById('meetingTasksArea').innerHTML=html;
+}
+
+// ===== 总渲染 =====
+function renderAll(){
+    document.getElementById('dashboardContent').innerHTML=buildLayoutHTML();
+    // 更新月份标签
+    var ms=document.getElementById('monthSelect');
+    var ml=document.getElementById('newProductMonthLabel');
+    if(ms&&ml)ml.textContent=ms.options[ms.selectedIndex].text.replace('2025年','')+'数据';
+    try{renderKPIs();}catch(e){console.error('renderKPIs error:',e);}
+    try{renderQuadrantChart();}catch(e){console.error('renderQuadrantChart error:',e);}
+    try{renderTreemap();}catch(e){console.error('renderTreemap error:',e);}
+    try{renderRedIssues();}catch(e){console.error('renderRedIssues error:',e);}
+    try{renderHeatmap();}catch(e){console.error('renderHeatmap error:',e);}
+    try{renderStarProducts();}catch(e){console.error('renderStarProducts error:',e);}
+    try{renderNewProducts();}catch(e){console.error('renderNewProducts error:',e);}
+    try{renderGaugeChart();}catch(e){console.error('renderGaugeChart error:',e);}
+    try{renderGapPlans();}catch(e){console.error('renderGapPlans error:',e);}
+    try{renderMeetingTasks();}catch(e){console.error('renderMeetingTasks error:',e);}
+}
+
+// ===== 初始化 =====
+document.addEventListener('DOMContentLoaded',function(){
+    console.log('经营驾驶舱初始化开始...');
+    renderMenu();
+    renderAll();
+    console.log('经营驾驶舱初始化完成');
+    document.getElementById('monthSelect').addEventListener('change',function(){console.log('月份切换:',this.value);renderAll();});
+});
+</script>
+</body>
+</html>
