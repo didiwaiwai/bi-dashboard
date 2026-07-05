@@ -788,10 +788,10 @@ function renderOnlineKPIs(){
 
 function renderFlowFunnel(){
     var stages=[
-        {name:'流量',sub:'曝光UV',count:'2,586.6万',rate:'100%',bg:'#eff6ff',text:'#2563eb',w:96},
-        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8',w:85},
-        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af',w:75},
-        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a',w:65},
+        {name:'流量',sub:'曝光UV',count:'2,586.6万',rate:'100%',bg:'#eff6ff',text:'#2563eb',w:100},
+        {name:'点击',sub:'访客数',count:'136.6万',rate:'5.28%',bg:'#dbeafe',text:'#1d4ed8',w:92},
+        {name:'渗透',sub:'进店人数',count:'43.8万',rate:'3.21%',bg:'#bfdbfe',text:'#1e40af',w:84},
+        {name:'支付转化',sub:'成交人数',count:'28.3万',rate:'2.18%',bg:'#93c5fd',text:'#1e3a8a',w:76},
     ];
     var html='<div class="flex flex-col items-center gap-1">';
     for(var i=0;i<stages.length;i++){
@@ -806,7 +806,7 @@ function renderFlowFunnel(){
         '</div>';
         if(i<stages.length-1)html+='<i class="fa fa-angle-down text-slate-300 text-[10px]"></i>';
     }
-    html+='<div class="rounded-lg px-2.5 py-1.5 flex items-center justify-between" style="width:65%;background:#f1f5f9">'+
+    html+='<div class="rounded-lg px-2.5 py-1.5 flex items-center justify-between" style="width:76%;background:#f1f5f9">'+
         '<span class="text-xs font-bold text-slate-700">成交额</span>'+
         '<div class="flex items-center gap-1.5"><span class="text-xs font-bold text-slate-800">¥9.68亿</span>'+
         '<span class="text-[10px] text-green-600 font-medium">↑12.7%</span></div></div>';
@@ -851,10 +851,10 @@ function renderTrafficTrend(){
     });
     if(!window.__charts)window.__charts={};
     window.__charts.trafficTrend=chart;
-    var legHtml='<div class="flex flex-wrap items-center gap-x-3 gap-y-1">';
+    var legHtml='<div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px]">';
     for(var i=0;i<trafficTrendData.datasets.length;i++){
         var d=trafficTrendData.datasets[i];
-        legHtml+='<div class="flex items-center gap-1 text-xs"><span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background:'+d.color+'"></span><span class="text-slate-600">'+d.label+'</span><span class="text-slate-400 text-[10px]">'+d.data[d.data.length-1]+'万</span></div>';
+        legHtml+='<span class="flex items-center gap-0.5"><span class="w-2 h-2 rounded-full flex-shrink-0" style="background:'+d.color+'"></span>'+d.label+' <b class="text-slate-500">'+d.data[d.data.length-1]+'万</b></span>';
     }
     legHtml+='</div>';
     document.getElementById('trafficLegend').innerHTML=legHtml;
