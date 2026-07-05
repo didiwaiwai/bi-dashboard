@@ -277,8 +277,8 @@ function buildLayoutHTML(){
     '<div class="grid grid-cols-1 lg:grid-cols-2 gap-3">'+
         '<div class="lg:row-span-2 bg-white rounded-xl shadow-sm p-3 flex flex-col"><div class="flex items-center justify-between mb-2"><h3 class="section-title">店铺 × 品类 销售占比</h3><span class="text-xs text-slate-400">6月 | 万元</span></div><div class="overflow-x-auto flex-1" id="heatmapArea"></div></div>'+
         '<div class="flex flex-col gap-3">'+
-            '<div class="bg-white rounded-xl shadow-sm p-3 flex-1"><div class="flex items-center justify-between mb-1.5"><h3 class="section-title">明星产品跨店表现 TOP5</h3><span class="text-xs text-slate-400">6月累计 | 万元</span></div><div class="overflow-x-auto" id="starProductArea"></div></div>'+
-            '<div class="bg-white rounded-xl shadow-sm p-3 flex-1"><div class="flex items-center justify-between mb-1.5"><h3 class="section-title">会议决议与任务</h3><span class="text-xs text-slate-400">'+meetingTasks.length+'项</span></div><div class="overflow-x-auto" id="meetingTasksArea"></div></div>'+
+            '<div class="bg-white rounded-xl shadow-sm p-3"><div class="flex items-center justify-between mb-1.5"><h3 class="section-title">明星产品跨店表现 TOP5</h3><span class="text-xs text-slate-400">6月累计 | 万元</span></div><div class="overflow-x-auto" id="starProductArea"></div></div>'+
+            '<div class="bg-white rounded-xl shadow-sm p-3 flex-1 flex flex-col"><div class="flex items-center justify-between mb-1.5"><h3 class="section-title">会议决议与任务</h3><span class="text-xs text-slate-400">'+meetingTasks.length+'项</span></div><div class="overflow-x-auto flex-1" id="meetingTasksArea"></div></div>'+
         '</div>'+
     '</div>'+
     // 下排：目标2/12 + 新品7/12 + 补差3/12
@@ -297,11 +297,11 @@ function renderKPIs(){
         if(k.type==='count'){
             var count=redIssues.filter(function(r){return r.severity==='high'}).length;
             var prevCount=4,change=count-prevCount,up=change<=0;
-            html+='<div class="bg-white rounded-xl shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow border-l-4 border-red-400">'+
-                '<div class="flex items-center justify-between mb-2"><span class="text-xs text-slate-500 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
-                '<div class="text-xl font-bold text-red-500 mb-2">'+count+'<span class="text-sm text-slate-400 font-normal"> 个</span></div>'+
-                '<div class="flex flex-col gap-0.5 text-xs"><div class="flex items-center justify-between"><span class="text-slate-400">高危待处理</span><span class="font-semibold text-red-500">'+count+'个</span></div>'+
-                '<div class="flex items-center gap-1"><span class="text-slate-400">环比</span><span class="'+(up?'kpi-up':'kpi-down')+' font-medium">'+(up?'↓':'↑')+Math.abs(change)+'个</span></div></div></div>';
+            html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow border-l-4 border-red-400">'+
+                '<div class="flex items-center justify-between mb-1"><span class="text-xs text-slate-500 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+                '<div class="text-xl font-bold text-red-500 mb-1">'+count+'<span class="text-sm text-slate-400 font-normal"> 个</span></div>'+
+                '<div class="flex flex-col text-[10px]"><div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">目标</span><span class="text-slate-700 font-medium">0个</span></div>'+
+                '<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">较上月</span><span class="'+(up?'kpi-up':'kpi-down')+' font-medium">'+(up?'↓':'↑')+Math.abs(change)+'个</span></div></div></div>';
             continue;
         }
         var val=cur[k.key],prevVal=prev[k.key];
@@ -313,14 +313,16 @@ function renderKPIs(){
         var statusCls=ok?'kpi-up':(rate&&rate>=90?'kpi-warn':'kpi-down');
         var displayVal=isPct?val.toFixed(1)+'%':'¥'+val.toFixed(0);
         var targetDisplay=isPct?(k.better==='lower'?'≤'+k.target+'%':'≥'+k.target+'%'):'¥'+k.target+'万';
-        var rateHTML='';
-        if(!isPct)rateHTML='<span class="'+statusCls+' font-semibold">达成 '+rate.toFixed(1)+'%</span>';
-        else rateHTML='<span class="'+(ok?'kpi-up':'kpi-down')+' font-semibold">'+(ok?'达标':'超标')+'</span>';
-        html+='<div class="bg-white rounded-xl shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow">'+
-            '<div class="flex items-center justify-between mb-2"><span class="text-xs text-slate-500 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
-            '<div class="text-xl font-bold text-slate-800 mb-2">'+displayVal+'</div>'+
-            '<div class="flex flex-col gap-0.5 text-xs"><div class="flex items-center justify-between"><span class="text-slate-400">目标 '+targetDisplay+'</span>'+rateHTML+'</div>'+
-            '<div class="flex items-center gap-1"><span class="text-slate-400">环比</span><span class="'+(momUp?'kpi-up':'kpi-down')+' font-medium">'+(momUp?'+':'')+mom.toFixed(1)+'%</span></div></div></div>';
+        var rateStr=isPct?(ok?'达标':'超标'):rate.toFixed(1)+'%';
+        var rateCls=isPct?(ok?'kpi-up':'kpi-down'):statusCls;
+        html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow">'+
+            '<div class="flex items-center justify-between mb-1"><span class="text-xs text-slate-500 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+            '<div class="text-xl font-bold text-slate-800 mb-1">'+displayVal+'</div>'+
+            '<div class="flex flex-col text-[10px]">'+
+                '<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">目标</span><span class="text-slate-700 font-medium">'+targetDisplay+'</span></div>'+
+                '<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">完成率</span><span class="'+rateCls+' font-medium">'+rateStr+'</span></div>'+
+                '<div class="flex justify-between py-0.5"><span class="text-slate-400">环比</span><span class="'+(momUp?'kpi-up':'kpi-down')+' font-medium">'+(momUp?'+':'')+mom.toFixed(1)+'%</span></div>'+
+            '</div></div>';
     }
     document.getElementById('kpiRow').innerHTML=html;
 }
