@@ -787,34 +787,33 @@ function renderOnlineKPIs(){
 }
 
 function renderFlowFunnel(){
-    var rates=[100,4.82,68.3,3.82,33.9]; // 各阶段转化率
-    var html='<div class="flex flex-col items-center gap-1">';
+    var html='<div class="flex flex-col items-center">';
     for(var i=0;i<flowData.length;i++){
         var f=flowData[i];
-        var topW=Math.max(20,100-i*14); // 100%, 86%, 72%, 58%, 44%
-        var arrow=i<flowData.length-1?'<div class="text-slate-300 text-xs leading-none">▼</div>':'';
-        html+='<div class="flex flex-col items-center">'+
-            '<div class="flex items-center justify-center text-white font-bold text-sm rounded-lg" style="width:'+topW+'%;background:'+f.color+';padding:8px 0;max-width:280px">'+
-                f.stage+' <span class="ml-2 text-xs opacity-80">'+f.count+'</span>'+
-            '</div></div>'+arrow;
+        var topW=Math.min(260,280-i*52);
+        html+='<div class="relative flex items-center justify-center text-white font-bold text-sm" style="width:'+topW+'px;padding:10px 0;background:'+f.color+';margin-bottom:-3px;clip-path:polygon(8% 0,92% 0,96% 100%,4% 100%)">'+
+            f.stage+' <span class="ml-2 text-xs opacity-85 font-normal">'+f.count+'</span>'+
+        '</div>';
     }
     html+='</div>';
     document.getElementById('flowFunnelArea').innerHTML=html;
 }
 
 function renderStoreRankTable(){
-    var maxRev=storeRankData[0].revenue;
-    var html='<div class="space-y-2">';
+    var html='<table class="text-xs w-full"><thead><tr class="border-b border-slate-100">'+
+        '<th class="p-1 text-left text-slate-400 font-medium">#</th><th class="p-1 text-left text-slate-400 font-medium">店铺</th><th class="p-1 text-right text-slate-400 font-medium">成交额</th><th class="p-1 text-right text-slate-400 font-medium">较上期</th><th class="p-1 text-right text-slate-400 font-medium">毛利率</th><th class="p-1 text-right text-slate-400 font-medium">利润额</th></tr></thead><tbody>';
     for(var i=0;i<storeRankData.length;i++){
         var s=storeRankData[i];
-        var barW=(s.revenue/maxRev*100).toFixed(0);
         var momUp=s.mom.indexOf('+')===0;
-        var bg=i===0?'#3b82f6':(i===1?'#22c55e':(i===2?'#f59e0b':'#e2e8f0'));
-        html+='<div><div class="flex items-center justify-between text-xs mb-0.5"><span class="font-bold '+(i<3?'text-accent':'text-slate-300')+'">#'+s.rank+'</span><span class="text-slate-600 font-medium flex-1 ml-2">'+s.name+'</span><span class="text-slate-400">¥'+s.revenue+'万 | 毛利'+s.marginRate.toFixed(1)+'% | 利润¥'+s.profit.toFixed(1)+'万</span></div>'+
-            '<div class="w-full bg-slate-100 rounded-full h-6 overflow-hidden flex items-center"><div class="h-full rounded-full flex items-center pl-2 text-white text-[10px] font-medium transition-all duration-500" style="width:'+barW+'%;background:'+bg+'">'+
-                '<span class="mr-2">'+s.revenue+'万</span><span class="opacity-80 '+ (momUp?'':'text-red-100')+'">'+s.mom+'</span></div></div></div>';
+        html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+            '<td class="p-1 text-center font-bold whitespace-nowrap '+(i<3?'text-accent':'text-slate-300')+'">'+s.rank+'</td>'+
+            '<td class="p-1 text-slate-700 font-medium whitespace-nowrap">'+s.name+'</td>'+
+            '<td class="p-1 text-right text-slate-700 font-semibold whitespace-nowrap">¥'+s.revenue+'万</td>'+
+            '<td class="p-1 text-right whitespace-nowrap '+(momUp?'kpi-up':'kpi-down')+'">'+s.mom+'</td>'+
+            '<td class="p-1 text-right text-slate-600 whitespace-nowrap">'+s.marginRate.toFixed(1)+'%</td>'+
+            '<td class="p-1 text-right text-slate-700 font-semibold whitespace-nowrap">¥'+s.profit.toFixed(1)+'万</td></tr>';
     }
-    html+='</div>';
+    html+='</tbody></table>';
     document.getElementById('storeRankArea').innerHTML=html;
 }
 
