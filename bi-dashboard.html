@@ -2699,151 +2699,14 @@ var financeHealthData=[
 ];
 
 // ===== 财务经营布局 =====
-
-// ===== 财务经营渲染函数 =====
-
-
-
-var financeState={contribTab:'store'};
-
-
-
-
-
-
-
-// ===== 财务经营数据 =====
-var financeKPIs=[
-	{label:'销售额',value:'¥8,530万',yoy:'+18.8%',mom:'+11.5%',up:true,icon:'fa-rmb',color:'#3b82f6',bg:'#eff6ff'},
-	{label:'产品毛利额',value:'¥3,120万',yoy:'+16.2%',mom:'+9.4%',up:true,icon:'fa-bar-chart',color:'#22c55e',bg:'#f0fdf4'},
-	{label:'边际毛利额',value:'¥2,380万',yoy:'+14.7%',mom:'+8.1%',up:true,icon:'fa-line-chart',color:'#06b6d4',bg:'#ecfeff'},
-	{label:'经营利润',value:'¥1,960万',yoy:'+12.4%',mom:'+7.3%',up:true,icon:'fa-briefcase',color:'#8b5cf6',bg:'#f5f3ff'},
-	{label:'净利润',value:'¥1,770万',yoy:'+11.1%',mom:'+6.8%',up:true,icon:'fa-diamond',color:'#ec4899',bg:'#fdf2f8'},
-	{label:'现金流(经营活动)',value:'¥1,280万',yoy:'+9.6%',mom:'-3.2%',up:false,icon:'fa-exchange',color:'#14b8a6',bg:'#f0fdfa'},
-	{label:'库存占用',value:'¥2,680万',turnover:'42天',trend:'+3天',trendUp:false,icon:'fa-archive',color:'#f97316',bg:'#fff7ed'},
-	{label:'应收余额',value:'¥1,860万',turnover:'36天',trend:'-2天',trendUp:true,icon:'fa-credit-card',color:'#ef4444',bg:'#fef2f2'}
-];
-
-var financeWaterfallData=[
-	{label:'销售收入',value:8530,type:'base'},
-	{label:'销售成本',value:-5410,type:'cost'},
-	{label:'产品毛利',value:3120,type:'subtotal'},
-	{label:'推广投放',value:-890,type:'cost'},
-	{label:'物流仓储',value:-320,type:'cost'},
-	{label:'平台佣金',value:-210,type:'cost'},
-	{label:'人工费用',value:-180,type:'cost'},
-	{label:'经营利润',value:1520,type:'subtotal'},
-	{label:'税费及其他',value:-250,type:'cost'},
-	{label:'净利润',value:1270,type:'total'}
-];
-
-var financeExpenseData=[
-	{name:'推广投放',pct:42.4,amount:890,color:'#3b82f6'},
-	{name:'物流仓储',pct:15.2,amount:320,color:'#22c55e'},
-	{name:'平台佣金',pct:10.0,amount:210,color:'#f59e0b'},
-	{name:'人工费用',pct:8.6,amount:180,color:'#8b5cf6'},
-	{name:'售后损耗',pct:5.3,amount:112,color:'#ef4444'},
-	{name:'办公差旅',pct:3.6,amount:76,color:'#ec4899'},
-	{name:'税费',pct:5.2,amount:110,color:'#06b6d4'},
-	{name:'其他费用',pct:9.7,amount:204,color:'#94a3b8'}
-];
-
-var financeContributionData={
-	store:[
-		{name:'天猫旗舰店',revenue:3280,gross:1180,profit:780,contribution:28.6,margin:23.8},
-		{name:'京东自营',revenue:2850,gross:1050,profit:680,contribution:24.8,margin:23.9},
-		{name:'抖音小店',revenue:2100,gross:720,profit:450,contribution:18.3,margin:21.4},
-		{name:'拼多多',revenue:1580,gross:510,profit:280,contribution:13.8,margin:17.7},
-		{name:'小红书',revenue:920,gross:360,profit:195,contribution:8.0,margin:21.2},
-		{name:'线下团购',revenue:750,gross:240,profit:120,contribution:6.5,margin:16.0}
-	],
-	category:[
-		{name:'休闲零食',revenue:2180,gross:890,profit:560,contribution:19.0,margin:25.7},
-		{name:'调味品',revenue:1650,gross:680,profit:430,contribution:14.4,margin:26.1},
-		{name:'乳制品',revenue:1420,gross:550,profit:340,contribution:12.4,margin:23.9},
-		{name:'冷冻食品',revenue:1280,gross:460,profit:280,contribution:11.2,margin:21.9},
-		{name:'方便速食',revenue:1150,gross:420,profit:255,contribution:10.0,margin:22.2},
-		{name:'烘焙糕点',revenue:980,gross:380,profit:225,contribution:8.6,margin:23.0}
-	],
-	customer:[
-		{name:'旺旺食品集团',revenue:586,gross:215,profit:132,contribution:5.1,margin:22.5},
-		{name:'海底捞供应链',revenue:398,gross:158,profit:95,contribution:3.5,margin:23.9},
-		{name:'三只松鼠代工厂',revenue:256,gross:98,profit:58,contribution:2.2,margin:22.7},
-		{name:'永辉超市',revenue:432,gross:152,profit:85,contribution:3.8,margin:19.7},
-		{name:'正大食品',revenue:185,gross:68,profit:38,contribution:1.6,margin:20.5},
-		{name:'来伊份供应链',revenue:212,gross:76,profit:42,contribution:1.8,margin:19.8}
-	]
-};
-
-var financeLowMarginOrders=[
-	{orderNo:'SO25060321',customer:'京东自营',item:'冷萃咖啡液30条',revenue:18.6,margin:3.2,reason:'促销折扣叠加物流成本偏高',level:'高'},
-	{orderNo:'SO25060415',customer:'拼多多',item:'麻辣小龙虾调料',revenue:12.4,margin:2.8,reason:'百亿补贴压价+包邮',level:'高'},
-	{orderNo:'SO25060422',customer:'抖音小店',item:'坚果大礼包礼盒',revenue:8.2,margin:1.6,reason:'达人高佣金+满减券叠加',level:'高'},
-	{orderNo:'SO25060508',customer:'小红书',item:'日式抹茶曲奇',revenue:6.4,margin:2.2,reason:'笔记投流成本未摊回',level:'中'},
-	{orderNo:'SO25060516',customer:'拼多多',item:'红烧牛肉面12入',revenue:4.2,margin:1.1,reason:'低价秒杀引流亏损',level:'中'},
-	{orderNo:'SO25060524',customer:'天猫旗舰店',item:'进口橄榄油500ml',revenue:15.2,margin:5.8,reason:'国际物流+关税成本偏高',level:'中'},
-	{orderNo:'SO25060603',customer:'线下团购',item:'速冻水饺批发',revenue:22.5,margin:8.4,reason:'量大折扣压至出厂价',level:'低'},
-	{orderNo:'SO25060612',customer:'京东自营',item:'有机杂粮礼盒',revenue:10.8,margin:4.5,reason:'入仓费+配送成本超标',level:'低'}
-];
-
-var financeReturnLoss={
-	returnAmount:205,returnRate:'2.4%',trend:'-0.2pp',
-	lossAmount:68,lossRate:'0.8%',lossTrend:'+0.1pp'
-};
-var financeReturnLossTable=[
-	{type:'质量退货',amount:82,pct:30.0,trend:'+0.3pp'},
-	{type:'临期损耗',amount:46,pct:16.8,trend:'+0.2pp'},
-	{type:'物流破损',amount:34,pct:12.4,trend:'-0.1pp'},
-	{type:'包装瑕疵',amount:28,pct:10.2,trend:'+0.1pp'},
-	{type:'售后理赔',amount:15,pct:5.5,trend:'-0.2pp'}
-];
-
-var financeReceivable={balance:1860,overdue:320,overdueCust:7,collectRate:'92.6%'};
-var financeAgingData=[
-	{bucket:'0-30天',amount:1080,pct:'58.1%',color:'#22c55e'},
-	{bucket:'31-60天',amount:420,pct:'22.6%',color:'#3b82f6'},
-	{bucket:'61-90天',amount:210,pct:'11.3%',color:'#f59e0b'},
-	{bucket:'90天以上',amount:150,pct:'8.0%',color:'#ef4444'}
-];
-
-var financeCashflowData={
-	labels:['1月','2月','3月','4月','5月','6月'],
-	inflow:[920,980,1010,1080,1120,1180],
-	outflow:[860,910,955,1005,1088,1095],
-	net:[60,70,55,75,32,85]
-};
-
-var financeInventoryData=[
-	{category:'冷冻食品',amount:620,turnover:58,share:'23.1%',status:'预警'},
-	{category:'粮油米面',amount:480,turnover:54,share:'17.9%',status:'预警'},
-	{category:'饮料冲调',amount:350,turnover:48,share:'13.1%',status:'关注'},
-	{category:'方便速食',amount:310,turnover:46,share:'11.6%',status:'关注'},
-	{category:'休闲零食',amount:280,turnover:38,share:'10.4%',status:'正常'},
-	{category:'乳制品',amount:220,turnover:35,share:'8.2%',status:'正常'},
-	{category:'调味品',amount:195,turnover:32,share:'7.3%',status:'正常'},
-	{category:'其他',amount:225,turnover:40,share:'8.4%',status:'正常'}
-];
-
-var financeHealthData=[
-	{label:'销售增长达标',status:'green',desc:'同比+18.8%，高于目标'},
-	{label:'经营利润改善',status:'green',desc:'环比+7.3%，持续向好'},
-	{label:'经营现金流',status:'yellow',desc:'环比-3.2%，需关注回款节奏'},
-	{label:'库存周转可控',status:'yellow',desc:'42天，较上月+3天'},
-	{label:'应收账龄健康',status:'green',desc:'36天，较上月-2天'},
-	{label:'低毛利订单异常',status:'red',desc:'6笔中高风险订单待处理'}
-];
-
-// ===== 财务经营布局 =====
 function buildFinanceLayoutHTML(){
 	return ''+
 	'<div class="space-y-3">'+
-// 第1行：8张KPI
 		'<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2" id="financeKpiRow"></div>'+
-		// 第2行：瀑布图 + 费用结构
-		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
 			'<div class="lg:col-span-8 bg-white rounded-xl shadow-sm p-3 flex flex-col">'+
 				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">利润瀑布图（本月）</h3><div class="flex items-center gap-1.5 text-[10px]"><span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm" style="background:#22c55e"></span>增加</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm" style="background:#ef4444"></span>减少</span><span class="flex items-center gap-1"><span class="w-3 h-3 rounded-sm" style="background:#3b82f6"></span>合计</span></div></div>'+
-				'<div class="flex-1 relative" style="min-height:170px"><canvas id="financeWaterfallChart"></canvas></div>'+
+				'<div class="flex-1 relative" style="min-height:300px"><canvas id="financeWaterfallChart"></canvas></div>'+
 			'</div>'+
 			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col justify-center">'+
 				'<div class="mb-2"><h3 class="section-title">费用结构分析（占销售额）</h3><div class="text-[10px] text-slate-400 mt-0.5">各项费用占销售额比重与金额分布</div></div>'+
@@ -2851,31 +2714,30 @@ function buildFinanceLayoutHTML(){
 					'<canvas id="financeExpenseChart" style="width:105px;height:105px;flex-shrink:0"></canvas>'+
 					'<div class="flex-1 min-w-0 ml-2 bg-slate-50 rounded-lg border border-slate-100 p-1.5" id="financeExpenseLegend"></div>'+
 				'</div>'+
+			'</div>'+
 		'</div>'+
-		// 第3行：利润贡献 + 低毛利订单 + 退款损失
 		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
 			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
 				'<div class="flex items-center justify-between mb-2">'+
-					'<h3 class="section-title">利润贡献分析</h3>'+
+					'<div><h3 class="section-title">利润贡献分析</h3><div class="text-[10px] text-slate-400 mt-0.5">多维利润贡献与盈利效率对比</div></div>'+
 					'<div class="flex gap-1 text-[10px] bg-slate-50 rounded-lg p-0.5" id="financeContribTabs">'+
 						'<button class="finance-tab-btn px-2 py-0.5 rounded bg-white text-accent font-medium shadow-sm" data-tab="store">按店铺</button>'+
 						'<button class="finance-tab-btn px-2 py-0.5 rounded text-slate-400" data-tab="category">按品类</button>'+
 						'<button class="finance-tab-btn px-2 py-0.5 rounded text-slate-400" data-tab="customer">按客户</button>'+
 					'</div>'+
 				'</div>'+
-				'<div class="overflow-x-auto flex-1" id="financeContribArea"></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="financeContribArea"></div>'+
 			'</div>'+
 			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
-				'<div class="flex items-center justify-between mb-1.5"><h3 class="section-title">低毛利订单预警</h3><span class="text-[10px] text-red-400">毛利率&lt;10%</span></div>'+
-				'<div class="overflow-x-auto flex-1" id="financeLowMarginArea"></div>'+
+				'<div class="flex items-center justify-between mb-2"><div><h3 class="section-title">低毛利订单预警</h3><div class="text-[10px] text-slate-400 mt-0.5">识别利润偏低订单并追踪原因</div></div><span class="px-2 py-0.5 rounded-full bg-red-50 text-[10px] text-red-500 border border-red-100">毛利率&lt;10%</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="financeLowMarginArea"></div>'+
 			'</div>'+
 			'<div class="lg:col-span-3 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
-				'<h3 class="section-title mb-2">退款损失与售后成本</h3>'+
+				'<div class="mb-2"><h3 class="section-title">退款损失与售后成本</h3><div class="text-[10px] text-slate-400 mt-0.5">退货损耗、售后与补偿成本监控</div></div>'+
 				'<div class="grid grid-cols-4 gap-1.5 mb-2" id="financeReturnSummary"></div>'+
-				'<div class="overflow-x-auto flex-1" id="financeReturnTableArea"></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="financeReturnTableArea"></div>'+
 			'</div>'+
 		'</div>'+
-		// 第4行：回款账期(6) + 现金流(6)
 		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
 			'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col" style="height:400px">'+
 				'<div class="flex items-start justify-between mb-2"><div><h3 class="section-title">回款与账期监控</h3><div class="text-[10px] text-slate-400 mt-0.5">账龄结构、逾期金额与回款表现</div></div><span class="text-[10px] text-slate-400 mt-1">回款率 '+financeReceivable.collectRate+'</span></div>'+
@@ -2887,7 +2749,6 @@ function buildFinanceLayoutHTML(){
 				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="financeCashflowChart"></canvas></div>'+
 			'</div>'+
 		'</div>'+
-		// 第5行：库存占用(6) + 健康灯(6)
 		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
 			'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col" style="height:400px">'+
 				'<div class="mb-2"><h3 class="section-title">库存资金占用分布</h3><div class="text-[10px] text-slate-400 mt-0.5">库存金额、周转与风险状态</div></div>'+
@@ -2900,7 +2761,6 @@ function buildFinanceLayoutHTML(){
 		'</div>'+
 	'</div>';
 }
-
 // ===== 财务经营渲染函数 =====
 function renderFinanceKPIs(){
 	var html='';
