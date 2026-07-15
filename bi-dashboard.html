@@ -3407,6 +3407,1331 @@ function renderSupplyQuickLinks(){
 	document.getElementById('supplyQuickLinksArea').innerHTML=html;
 }
 
+
+// ===== 技术与售后数据（食品电商） =====
+var techKPIs=[
+	{label:'技术支持工单数',value:'1,286',yoy:'+12.5%',mom:'+5.8%',up:false,icon:'fa-wrench',color:'#3b82f6',bg:'#eff6ff'},
+	{label:'售后工单数',value:'842',yoy:'+8.2%',mom:'+3.1%',up:false,icon:'fa-ticket',color:'#22c55e',bg:'#f0fdf4'},
+	{label:'首次响应时长',value:'18.6min',yoy:'-2.5min',mom:'-1.2min',up:true,icon:'fa-clock-o',color:'#06b6d4',bg:'#ecfeff'},
+	{label:'首次解决率',value:'78.4%',yoy:'+3.2pp',mom:'+1.5pp',up:true,icon:'fa-check-circle',color:'#8b5cf6',bg:'#f5f3ff'},
+	{label:'返修率',value:'2.35%',yoy:'-0.3pp',mom:'-0.1pp',up:true,icon:'fa-refresh',color:'#ef4444',bg:'#fef2f2'},
+	{label:'客户满意度',value:'4.71/5',yoy:'+0.15',mom:'+0.05',up:true,icon:'fa-smile-o',color:'#f59e0b',bg:'#fffbeb'},
+	{label:'售后成本',value:'¥236.8万',yoy:'+5.2%',mom:'+2.1%',up:false,icon:'fa-rmb',color:'#f97316',bg:'#fff7ed'},
+	{label:'关闭率',value:'93.5%',yoy:'+1.8pp',mom:'+0.6pp',up:true,icon:'fa-pie-chart',color:'#14b8a6',bg:'#f0fdfa'}
+];
+
+var techFaultData=[
+	{label:'温控故障',count:326,pct:25.3,color:'#3b82f6'},
+	{label:'密封泄漏',count:258,pct:20.1,color:'#22c55e'},
+	{label:'电机异响',count:186,pct:14.5,color:'#f59e0b'},
+	{label:'电路板故障',count:152,pct:11.8,color:'#8b5cf6'},
+	{label:'外观破损',count:128,pct:10.0,color:'#ef4444'},
+	{label:'其他故障',count:236,pct:18.3,color:'#94a3b8'}
+];
+var techFaultTotal=1286;
+
+var techModelData=[
+	{model:'FR-380A冷冻柜',tickets:186,faultRate:'3.8%',firstFix:'76.2%',returnRate:'2.8%',satisfaction:'4.52'},
+	{model:'SR-200W蒸柜',tickets:152,faultRate:'2.9%',firstFix:'82.5%',returnRate:'1.9%',satisfaction:'4.68'},
+	{model:'HR-600D烘箱',tickets:138,faultRate:'2.5%',firstFix:'80.1%',returnRate:'2.2%',satisfaction:'4.75'},
+	{model:'MX-350搅拌机',tickets:125,faultRate:'3.2%',firstFix:'74.8%',returnRate:'3.1%',satisfaction:'4.41'},
+	{model:'VC-500真空机',tickets:108,faultRate:'2.1%',firstFix:'85.6%',returnRate:'1.5%',satisfaction:'4.82'},
+	{model:'CT-100切丁机',tickets:95,faultRate:'1.8%',firstFix:'88.2%',returnRate:'1.2%',satisfaction:'4.88'}
+];
+
+var techTicketStatus=[
+	{label:'已关闭',count:1988,pct:93.5,color:'#22c55e'},
+	{label:'处理中',count:86,pct:4.0,color:'#3b82f6'},
+	{label:'超时未处理',count:54,pct:2.5,color:'#ef4444'}
+];
+var techTicketTotal=2128;
+
+var techIndustryData={
+	labels:['食品加工','餐饮连锁','零售超市','社区团购','酒店集团','其他行业'],
+	tickets:[386,285,218,156,128,113],
+	complaintRate:[2.8,2.2,1.8,3.2,1.5,2.5]
+};
+
+var techOnsiteSupport={count:486,avgTime:'2.8小时',satisfaction:'4.85',cost:'¥128.6万'};
+var techRemoteSupport={count:800,avgTime:'18.6分钟',satisfaction:'4.62',cost:'¥36.2万'};
+
+var techPartsData=[
+	{cat:'加热管/温控器',qty:326,cost:42.8,repairQty:186,repairCost:28.5},
+	{cat:'密封圈/垫片',qty:285,cost:18.6,repairQty:152,repairCost:12.8},
+	{cat:'电机/轴承',qty:218,cost:56.2,repairQty:128,repairCost:38.6},
+	{cat:'电路板/控制器',qty:168,cost:86.5,repairQty:98,repairCost:52.8},
+	{cat:'刀片/切割件',qty:138,cost:32.7,repairQty:86,repairCost:22.5}
+];
+
+var techRiskCustomers=[
+	{name:'华东食品集团',industry:'食品加工',tickets:38,returnRate:'5.2%',timeoutRate:'12.5%',satisfaction:'3.82',level:'高',reason:'设备老化严重，多次报修未根治'},
+	{name:'华南连锁餐饮',industry:'餐饮连锁',tickets:32,returnRate:'4.8%',timeoutRate:'8.6%',satisfaction:'3.95',level:'高',reason:'蒸柜系列批次质量问题'},
+	{name:'华润商超系统',industry:'零售超市',tickets:28,returnRate:'3.5%',timeoutRate:'6.8%',satisfaction:'4.12',level:'中',reason:'冷链设备温控故障频发'},
+	{name:'美团优选',industry:'社区团购',tickets:25,returnRate:'4.2%',timeoutRate:'5.5%',satisfaction:'4.05',level:'中',reason:'搅拌机刀具磨损过快'},
+	{name:'京东企业采购',industry:'电商平台',tickets:22,returnRate:'2.8%',timeoutRate:'4.2%',satisfaction:'4.35',level:'低',reason:'包装运输导致的运输损坏'}
+];
+
+var techKnowledgeHitRate={total:1856,hit:1528,rate:'82.3%'};
+var techKnowledgeData=[
+	{name:'冷柜温控故障排查指南',views:586,rating:'4.92',solveRate:'92.5%'},
+	{name:'蒸柜密封圈更换操作手册',views:452,rating:'4.85',solveRate:'88.6%'},
+	{name:'烘箱电路板故障代码对照表',views:398,rating:'4.78',solveRate:'85.2%'},
+	{name:'搅拌机刀片磨损判断标准',views:356,rating:'4.65',solveRate:'82.5%'},
+	{name:'真空机负压不足排查流程',views:312,rating:'4.82',solveRate:'86.8%'}
+];
+
+function buildTechLayoutHTML(){
+	return ''+
+	'<div class="space-y-3">'+
+		'<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2" id="techKpiRow"></div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">产品故障类型 TOP</h3><span class="text-[10px] text-slate-400">本月</span></div>'+
+				'<div class="flex items-center gap-3 flex-1">'+
+					'<div class="relative flex-shrink-0" style="width:130px;height:130px"><canvas id="techFaultChart"></canvas></div>'+
+					'<div class="flex-1 min-w-0" id="techFaultLegend"></div>'+
+				'</div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">型号维度问题分析</h3><div class="text-[10px] text-slate-400 mt-0.5">按型号统计 | 故障率/解決率/返修率</div></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="techModelArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">工单状态分布</h3><div class="text-[10px] text-slate-400 mt-0.5">全部工单状态统计</div></div>'+
+				'<div class="flex items-center gap-3 flex-1">'+
+					'<div class="relative flex-shrink-0" style="width:130px;height:130px"><canvas id="techTicketChart"></canvas></div>'+
+					'<div class="flex-1 min-w-0" id="techTicketLegend"></div>'+
+				'</div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">客户行业售后分布</h3><span class="text-[10px] text-slate-400">工单数 & 投诉率</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="techIndustryChart"></canvas></div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">现场指导 / 远程支持效率</h3></div>'+
+				'<div class="grid grid-cols-2 gap-3 flex-1">'+
+					'<div class="bg-blue-50 rounded-xl p-3 border border-blue-100 flex flex-col justify-center items-center text-center">'+
+						'<div class="text-[10px] text-blue-500 mb-1">现场指导</div>'+
+						'<div class="text-lg font-bold text-blue-700">'+techOnsiteSupport.count+'次</div>'+
+						'<div class="text-[10px] text-blue-500 mt-1">均时 '+techOnsiteSupport.avgTime+'</div>'+
+						'<div class="text-[10px] text-blue-500">满意度 '+techOnsiteSupport.satisfaction+'</div>'+
+						'<div class="text-[10px] text-blue-400 mt-0.5">成本 '+techOnsiteSupport.cost+'</div>'+
+					'</div>'+
+					'<div class="bg-green-50 rounded-xl p-3 border border-green-100 flex flex-col justify-center items-center text-center">'+
+						'<div class="text-[10px] text-green-500 mb-1">远程支持</div>'+
+						'<div class="text-lg font-bold text-green-700">'+techRemoteSupport.count+'次</div>'+
+						'<div class="text-[10px] text-green-500 mt-1">均时 '+techRemoteSupport.avgTime+'</div>'+
+						'<div class="text-[10px] text-green-500">满意度 '+techRemoteSupport.satisfaction+'</div>'+
+						'<div class="text-[10px] text-green-400 mt-0.5">成本 '+techRemoteSupport.cost+'</div>'+
+					'</div>'+
+				'</div>'+
+			'</div>'+
+			'<div class="lg:col-span-3 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">配件与返修件消耗</h3><div class="text-[10px] text-slate-400 mt-0.5">本月统计 | 单位：万元</div></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="techPartsArea"></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-7 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">高风险客户清单</h3><span class="badge-red text-[10px]">需重点关注</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="techRiskArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">技术知识库与FAQ命中率</h3></div>'+
+				'<div class="flex items-center gap-3 flex-1">'+
+					'<div class="relative flex-shrink-0" style="width:120px;height:120px"><canvas id="techKnowledgeChart"></canvas></div>'+
+					'<div class="flex-1 min-w-0" id="techKnowledgeArea"></div>'+
+				'</div>'+
+			'</div>'+
+		'</div>'+
+	'</div>';
+}
+
+function renderTechKPIs(){
+	var html='';
+	for(var i=0;i<techKPIs.length;i++){
+		var k=techKPIs[i];
+		html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[10px] text-slate-400 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+			'<div class="text-lg font-bold text-slate-800 mb-1">'+k.value+'</div>'+
+			'<div class="flex flex-col text-[10px]">'+
+				'<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">同比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.yoy+'</span></div>'+
+				'<div class="flex justify-between py-0.5"><span class="text-slate-400">环比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.mom+'</span></div>'+
+			'</div></div>';
+	}
+	document.getElementById('techKpiRow').innerHTML=html;
+}
+
+function renderTechFaultChart(){
+	if(window.__charts&&window.__charts.techFault)window.__charts.techFault.destroy();
+	var ctx=document.getElementById('techFaultChart').getContext('2d');
+	var labels=[],values=[],colors=[];
+	for(var i=0;i<techFaultData.length;i++){labels.push(techFaultData[i].label);values.push(techFaultData[i].pct);colors.push(techFaultData[i].color);}
+	var chart=new Chart(ctx,{
+		type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
+		options:{responsive:true,maintainAspectRatio:true,cutout:'55%',plugins:{legend:{display:false}}},
+		plugins:[{id:'techFaultCenter',afterDraw:function(chart){
+			var ctx2=chart.ctx;ctx2.save();ctx2.textAlign='center';ctx2.textBaseline='middle';
+			ctx2.font='bold 15px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#1e293b';
+			ctx2.fillText(techFaultTotal+'个',chart.width/2,chart.height/2-3);
+			ctx2.font='10px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#94a3b8';
+			ctx2.fillText('故障总数',chart.width/2,chart.height/2+14);ctx2.restore();
+		}}]
+	});
+	if(!window.__charts)window.__charts={};window.__charts.techFault=chart;
+	var leg='';
+	for(var j=0;j<techFaultData.length;j++){var d=techFaultData[j];
+		leg+='<div class="flex items-center justify-between py-0.5"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:'+d.color+'"></span><span class="text-[11px] text-slate-600">'+d.label+'</span></div><span class="text-[11px]"><span class="font-semibold text-slate-700">'+d.count+'</span><span class="text-slate-400 ml-1">'+d.pct.toFixed(1)+'%</span></span></div>';
+	}
+	document.getElementById('techFaultLegend').innerHTML=leg;
+}
+
+function renderTechModelTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">型号</th><th class="p-1.5 text-right text-slate-400">工单数</th><th class="p-1.5 text-center text-slate-400">故障率</th><th class="p-1.5 text-center text-slate-400">首次解决率</th><th class="p-1.5 text-center text-slate-400">返修率</th><th class="p-1.5 text-center text-slate-400">满意度</th></tr></thead><tbody>';
+	for(var i=0;i<techModelData.length;i++){
+		var m=techModelData[i];
+		var fixCls=parseFloat(m.firstFix)>=85?'kpi-up':(parseFloat(m.firstFix)>=78?'kpi-warn':'kpi-down');
+		var retCls=parseFloat(m.returnRate)<=2?'kpi-up':(parseFloat(m.returnRate)<=3?'kpi-warn':'kpi-down');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+m.model+'</td>'+
+			'<td class="p-1.5 text-right text-slate-600">'+m.tickets+'</td>'+
+			'<td class="p-1.5 text-center text-slate-600">'+m.faultRate+'</td>'+
+			'<td class="p-1.5 text-center font-semibold '+fixCls+'">'+m.firstFix+'</td>'+
+			'<td class="p-1.5 text-center font-semibold '+retCls+'">'+m.returnRate+'</td>'+
+			'<td class="p-1.5 text-center text-slate-700">'+m.satisfaction+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('techModelArea').innerHTML=html;
+}
+
+function renderTechTicketChart(){
+	if(window.__charts&&window.__charts.techTicket)window.__charts.techTicket.destroy();
+	var ctx=document.getElementById('techTicketChart').getContext('2d');
+	var labels=[],values=[],colors=[];
+	for(var i=0;i<techTicketStatus.length;i++){labels.push(techTicketStatus[i].label);values.push(techTicketStatus[i].pct);colors.push(techTicketStatus[i].color);}
+	var chart=new Chart(ctx,{
+		type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
+		options:{responsive:true,maintainAspectRatio:true,cutout:'55%',plugins:{legend:{display:false}}},
+		plugins:[{id:'techTicketCenter',afterDraw:function(chart){
+			var ctx2=chart.ctx;ctx2.save();ctx2.textAlign='center';ctx2.textBaseline='middle';
+			ctx2.font='bold 15px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#1e293b';
+			ctx2.fillText(techTicketTotal+'个',chart.width/2,chart.height/2-3);
+			ctx2.font='10px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#94a3b8';
+			ctx2.fillText('总工单数',chart.width/2,chart.height/2+14);ctx2.restore();
+		}}]
+	});
+	if(!window.__charts)window.__charts={};window.__charts.techTicket=chart;
+	var leg='';
+	for(var j=0;j<techTicketStatus.length;j++){var d=techTicketStatus[j];
+		leg+='<div class="flex items-center justify-between py-0.5"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:'+d.color+'"></span><span class="text-[11px] text-slate-600">'+d.label+'</span></div><span class="text-[11px]"><span class="font-semibold text-slate-700">'+d.count+'</span><span class="text-slate-400 ml-1">'+d.pct.toFixed(1)+'%</span></span></div>';
+	}
+	document.getElementById('techTicketLegend').innerHTML=leg;
+}
+
+function renderTechIndustryChart(){
+	if(window.__charts&&window.__charts.techIndustry)window.__charts.techIndustry.destroy();
+	var ctx=document.getElementById('techIndustryChart').getContext('2d');
+	var d=techIndustryData;
+	var chart=new Chart(ctx,{
+		type:'bar',data:{labels:d.labels,datasets:[
+			{label:'工单数',data:d.tickets,backgroundColor:'rgba(59,130,246,0.55)',borderColor:'#3b82f6',borderWidth:1,borderRadius:2,order:2},
+			{label:'投诉率(%)',data:d.complaintRate,type:'line',borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#ef4444',fill:false,tension:0.3,yAxisID:'y1',order:1}
+		]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:10,font:{size:9},usePointStyle:true}}},
+			scales:{
+				x:{grid:{display:false},ticks:{font:{size:9}}},
+				y:{position:'left',grid:{color:'#e2e8f0'},ticks:{font:{size:9}},title:{display:true,text:'工单数',font:{size:9}}},
+				y1:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:function(v){return v+'%';},font:{size:9}},title:{display:true,text:'投诉率',font:{size:9}}}
+			}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.techIndustry=chart;
+}
+
+function renderTechPartsTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1 text-left text-slate-400">类别</th><th class="p-1 text-right text-slate-400">领用</th><th class="p-1 text-right text-slate-400">消耗成本</th><th class="p-1 text-right text-slate-400">返修</th><th class="p-1 text-right text-slate-400">返修成本</th></tr></thead><tbody>';
+	for(var i=0;i<techPartsData.length;i++){
+		var p=techPartsData[i];
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1 text-slate-700 font-medium">'+p.cat+'</td>'+
+			'<td class="p-1 text-right text-slate-600">'+p.qty+'</td>'+
+			'<td class="p-1 text-right text-slate-700 font-semibold">¥'+p.cost+'万</td>'+
+			'<td class="p-1 text-right text-slate-600">'+p.repairQty+'</td>'+
+			'<td class="p-1 text-right text-slate-700 font-semibold">¥'+p.repairCost+'万</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('techPartsArea').innerHTML=html;
+}
+
+function renderTechRiskTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1 text-left text-slate-400">客户名称</th><th class="p-1 text-left text-slate-400">行业</th><th class="p-1 text-right text-slate-400">工单数</th><th class="p-1 text-center text-slate-400">返修率</th><th class="p-1 text-center text-slate-400">超时率</th><th class="p-1 text-center text-slate-400">满意度</th><th class="p-1 text-center text-slate-400">风险等级</th><th class="p-1 text-left text-slate-400">原因</th></tr></thead><tbody>';
+	for(var i=0;i<techRiskCustomers.length;i++){
+		var r=techRiskCustomers[i];
+		var lvlCls=r.level==='高'?'badge-red':(r.level==='中'?'badge-yellow':'badge-blue');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1 text-slate-700 font-medium">'+r.name+'</td>'+
+			'<td class="p-1 text-slate-600">'+r.industry+'</td>'+
+			'<td class="p-1 text-right text-slate-600">'+r.tickets+'</td>'+
+			'<td class="p-1 text-center"><span class="'+(parseFloat(r.returnRate)>=4?'kpi-down':'kpi-warn')+' font-semibold">'+r.returnRate+'</span></td>'+
+			'<td class="p-1 text-center"><span class="'+(parseFloat(r.timeoutRate)>=8?'kpi-down':'kpi-warn')+' font-semibold">'+r.timeoutRate+'</span></td>'+
+			'<td class="p-1 text-center text-slate-700">'+r.satisfaction+'</td>'+
+			'<td class="p-1 text-center"><span class="'+lvlCls+'">'+r.level+'</span></td>'+
+			'<td class="p-1 text-slate-500 max-w-[140px] truncate" title="'+r.reason+'">'+r.reason+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('techRiskArea').innerHTML=html;
+}
+
+function renderTechKnowledge(){
+	if(window.__charts&&window.__charts.techKnowledge)window.__charts.techKnowledge.destroy();
+	var ctx=document.getElementById('techKnowledgeChart').getContext('2d');
+	var hit=techKnowledgeHitRate.hit,miss=techKnowledgeHitRate.total-techKnowledgeHitRate.hit;
+	var chart=new Chart(ctx,{
+		type:'doughnut',data:{datasets:[{data:[hit,miss],backgroundColor:['#22c55e','#e2e8f0'],borderWidth:0,borderRadius:6}]},
+		options:{responsive:true,maintainAspectRatio:true,cutout:'70%',plugins:{legend:{display:false},tooltip:{enabled:false}}},
+		plugins:[{id:'techKnowCenter',afterDraw:function(chart){
+			var ctx2=chart.ctx;ctx2.save();ctx2.textAlign='center';ctx2.textBaseline='middle';
+			ctx2.font='bold 16px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#22c55e';
+			ctx2.fillText(techKnowledgeHitRate.rate,chart.width/2,chart.height/2-3);
+			ctx2.font='9px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#94a3b8';
+			ctx2.fillText('命中率',chart.width/2,chart.height/2+14);ctx2.restore();
+		}}]
+	});
+	if(!window.__charts)window.__charts={};window.__charts.techKnowledge=chart;
+	var html='<div class="flex items-center gap-3 mb-2"><div><span class="text-xs text-slate-400">总查询 </span><span class="text-sm font-bold text-slate-700">'+techKnowledgeHitRate.total+'</span></div><div><span class="text-xs text-slate-400">命中 </span><span class="text-sm font-bold text-green-500">'+techKnowledgeHitRate.hit+'</span></div></div>';
+	html+='<div class="text-[10px] font-medium text-slate-500 mb-1">热门知识 TOP5</div><div class="space-y-1">';
+	for(var i=0;i<techKnowledgeData.length;i++){
+		var t=techKnowledgeData[i];
+		html+='<div class="flex items-center justify-between text-[10px] py-0.5 border-b border-slate-50"><span class="text-slate-600 truncate max-w-[140px]">'+(i+1)+'. '+t.name+'</span><span class="text-slate-400">'+t.views+'次</span></div>';
+	}
+	html+='</div>';
+	document.getElementById('techKnowledgeArea').innerHTML=html;
+}
+
+// ===== 会议复盘数据（食品电商） =====
+var meetingKPIs=[
+	{label:'本月会议次数',value:'28',yoy:'+16.7%',mom:'+7.7%',up:true,icon:'fa-calendar',color:'#3b82f6',bg:'#eff6ff'},
+	{label:'参会总人次',value:'386',yoy:'+22.5%',mom:'+12.8%',up:true,icon:'fa-users',color:'#22c55e',bg:'#f0fdf4'},
+	{label:'平均会议时长',value:'52min',yoy:'-8min',mom:'-3min',up:true,icon:'fa-clock-o',color:'#06b6d4',bg:'#ecfeff'},
+	{label:'决议事项',value:'86',yoy:'+18.5%',mom:'+8.2%',up:true,icon:'fa-check-square-o',color:'#8b5cf6',bg:'#f5f3ff'},
+	{label:'任务完成率',value:'78.5%',yoy:'+5.2pp',mom:'+2.1pp',up:true,icon:'fa-tasks',color:'#f59e0b',bg:'#fffbeb'},
+	{label:'平均参会率',value:'92.3%',yoy:'+3.1pp',mom:'+1.5pp',up:true,icon:'fa-pie-chart',color:'#14b8a6',bg:'#f0fdfa'},
+	{label:'超期任务',value:'12',yoy:'-5',mom:'-3',up:true,icon:'fa-exclamation-triangle',color:'#ef4444',bg:'#fef2f2'},
+	{label:'复盘覆盖率',value:'85.2%',yoy:'+6.8pp',mom:'+2.5pp',up:true,icon:'fa-refresh',color:'#ec4899',bg:'#fdf2f8'}
+];
+
+var meetingTypeData=[
+	{label:'运营复盘',count:8,pct:28.6,color:'#3b82f6'},
+	{label:'销售汇报',count:6,pct:21.4,color:'#22c55e'},
+	{label:'供应链协调',count:5,pct:17.9,color:'#f59e0b'},
+	{label:'品质问题',count:4,pct:14.3,color:'#ef4444'},
+	{label:'战略规划',count:3,pct:10.7,color:'#8b5cf6'},
+	{label:'其他',count:2,pct:7.1,color:'#94a3b8'}
+];
+var meetingTypeTotal=28;
+
+var meetingDeptData={
+	labels:['运营部','销售部','供应链','品质部','市场部','财务部'],
+	counts:[8,7,5,4,3,3]
+};
+
+var meetingTrendData={
+	labels:['1月','2月','3月','4月','5月','6月'],
+	meetings:[22,20,24,25,26,28],
+	resolutions:[58,52,65,72,78,86],
+	completeRate:[68.5,70.2,73.8,75.1,76.5,78.5]
+};
+
+var meetingTaskData=[
+	{task:'优化退货流程，建立质量反馈闭环',owner:'王小明',dept:'运营部',deadline:'07-15',status:'进行中',priority:'高',daysLeft:10},
+	{task:'冷冻食品及粮油库存促销方案制定',owner:'李芳',dept:'供应链',deadline:'07-10',status:'进行中',priority:'高',daysLeft:5},
+	{task:'拼多多渠道专项提升计划',owner:'张伟',dept:'渠道部',deadline:'07-20',status:'待启动',priority:'中',daysLeft:15},
+	{task:'抖音坚果糖果品类ROI优化方案',owner:'陈静',dept:'市场部',deadline:'07-08',status:'已完成',priority:'中',daysLeft:0},
+	{task:'烘焙糕点新品供应商备选方案',owner:'赵磊',dept:'采购部',deadline:'07-05',status:'已完成',priority:'高',daysLeft:0},
+	{task:'茶叶冲饮品类汰换评估报告',owner:'吴婷',dept:'采购部',deadline:'07-12',status:'进行中',priority:'中',daysLeft:7},
+	{task:'线下团购回款周期优化方案',owner:'刘洋',dept:'财务部',deadline:'07-18',status:'待启动',priority:'中',daysLeft:13},
+	{task:'京东自营搜索排名提升计划',owner:'周杰',dept:'市场部',deadline:'07-08',status:'已完成',priority:'高',daysLeft:0}
+];
+
+var meetingOverdueData=[
+	{task:'乳制品临期库存促销方案',owner:'孙悦',dept:'运营部',deadline:'06-28',overdue:7,reason:'方案多轮评审未通过'},
+	{task:'冷链物流成本优化报告',owner:'赵磊',dept:'供应链',deadline:'06-30',overdue:5,reason:'数据采集延迟'},
+	{task:'小红书达人续约谈判',owner:'郑浩',dept:'渠道部',deadline:'07-02',overdue:3,reason:'达人档期冲突'}
+];
+
+var meetingResolutionData=[
+	{resolution:'启动退货流程线上化项目',meeting:'06-28运营复盘',owner:'王小明',progress:'60%',deadline:'08-15',impact:'减少退货处理时间50%'},
+	{resolution:'投放预算向抖音倾斜15%',meeting:'07-01销售汇报',owner:'陈静',progress:'80%',deadline:'07-10',impact:'预计带来GMV增长12%'},
+	{resolution:'建立供应商备选库',meeting:'06-25供应链协调',owner:'赵磊',progress:'40%',deadline:'08-01',impact:'降低供应风险30%'},
+	{resolution:'开设拼多多品牌旗舰店',meeting:'06-20战略规划',owner:'张伟',progress:'25%',deadline:'09-01',impact:'新增渠道收入目标200万/月'},
+	{resolution:'乳制品冷链标准升级',meeting:'06-22品质问题',owner:'孙悦',progress:'55%',deadline:'07-30',impact:'降低退货率0.5pp'}
+];
+
+var meetingCalendarData=[
+	{date:'07-08 周一',time:'09:30',topic:'运营周复盘',dept:'运营部',attendees:'王小明、李芳、孙悦等8人'},
+	{date:'07-09 周二',time:'14:00',topic:'月度销售汇报',dept:'销售部',attendees:'张伟、陈静、郑浩等12人'},
+	{date:'07-10 周三',time:'10:00',topic:'供应链库存协调',dept:'供应链',attendees:'李芳、赵磊、吴婷等6人'},
+	{date:'07-11 周四',time:'15:00',topic:'品质问题专项会',dept:'品质部',attendees:'孙悦、赵磊、王小明等5人'},
+	{date:'07-12 周五',time:'09:00',topic:'新品上市评审会',dept:'采购部',attendees:'吴婷、陈静、赵磊等10人'}
+];
+
+function buildMeetingLayoutHTML(){
+	return ''+
+	'<div class="space-y-3">'+
+		'<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2" id="meetingKpiRow"></div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch" style="height:340px">'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col overflow-hidden">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">会议类型分布</h3><span class="text-[10px] text-slate-400">本月</span></div>'+
+				'<div class="flex items-center gap-3 flex-1">'+
+					'<div class="relative flex-shrink-0" style="width:130px;height:130px"><canvas id="meetingTypeChart"></canvas></div>'+
+					'<div class="flex-1 min-w-0" id="meetingTypeLegend"></div>'+
+				'</div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col overflow-hidden">'+
+				'<div class="mb-2"><h3 class="section-title">部门会议统计</h3><span class="text-[10px] text-slate-400">本月 | 会议次数</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="meetingDeptArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col overflow-hidden">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">会议效率趋势</h3><span class="text-[10px] text-slate-400">近6个月</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="meetingTrendChart"></canvas></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-7 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">待办任务跟踪</h3><span class="text-[10px] text-slate-400">共 '+meetingTaskData.length+' 项</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="meetingTaskArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">超期任务分析</h3><span class="badge-red text-[10px]">'+meetingOverdueData.length+'项超期</span></div>'+
+				'<div class="flex-1 space-y-1.5" id="meetingOverdueArea"></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-7 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">重点决议跟进清单</h3><span class="text-[10px] text-slate-400">本月重点决议</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="meetingResolutionArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">下月会议日历</h3><span class="text-[10px] text-slate-400">7月已排期会议</span></div>'+
+				'<div class="flex-1 space-y-1.5" id="meetingCalendarArea"></div>'+
+			'</div>'+
+		'</div>'+
+	'</div>';
+}
+
+function renderMeetingKPIs(){
+	var html='';
+	for(var i=0;i<meetingKPIs.length;i++){
+		var k=meetingKPIs[i];
+		html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[10px] text-slate-400 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+			'<div class="text-lg font-bold text-slate-800 mb-1">'+k.value+'</div>'+
+			'<div class="flex flex-col text-[10px]">'+
+				'<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">同比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.yoy+'</span></div>'+
+				'<div class="flex justify-between py-0.5"><span class="text-slate-400">环比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.mom+'</span></div>'+
+			'</div></div>';
+	}
+	document.getElementById('meetingKpiRow').innerHTML=html;
+}
+
+function renderMeetingTypeChart(){
+	if(window.__charts&&window.__charts.meetingType)window.__charts.meetingType.destroy();
+	var ctx=document.getElementById('meetingTypeChart').getContext('2d');
+	var labels=[],values=[],colors=[];
+	for(var i=0;i<meetingTypeData.length;i++){labels.push(meetingTypeData[i].label);values.push(meetingTypeData[i].pct);colors.push(meetingTypeData[i].color);}
+	var chart=new Chart(ctx,{
+		type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
+		options:{responsive:true,maintainAspectRatio:true,cutout:'55%',plugins:{legend:{display:false}}},
+		plugins:[{id:'meetingTypeCenter',afterDraw:function(chart){
+			var ctx2=chart.ctx;ctx2.save();ctx2.textAlign='center';ctx2.textBaseline='middle';
+			ctx2.font='bold 15px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#1e293b';
+			ctx2.fillText(meetingTypeTotal+'次',chart.width/2,chart.height/2-3);
+			ctx2.font='10px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#94a3b8';
+			ctx2.fillText('会议总数',chart.width/2,chart.height/2+14);ctx2.restore();
+		}}]
+	});
+	if(!window.__charts)window.__charts={};window.__charts.meetingType=chart;
+	var leg='';
+	for(var j=0;j<meetingTypeData.length;j++){var d=meetingTypeData[j];
+		leg+='<div class="flex items-center justify-between py-0.5"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:'+d.color+'"></span><span class="text-[11px] text-slate-600">'+d.label+'</span></div><span class="text-[11px]"><span class="font-semibold text-slate-700">'+d.count+'次</span><span class="text-slate-400 ml-1">'+d.pct.toFixed(1)+'%</span></span></div>';
+	}
+	document.getElementById('meetingTypeLegend').innerHTML=leg;
+}
+
+function renderMeetingDeptChart(){
+	var maxCount=Math.max.apply(null,meetingDeptData.counts);
+	var html='<div class="space-y-1.5 p-2">';
+	var colors=['#3b82f6','#22c55e','#f59e0b','#ef4444','#8b5cf6','#06b6d4'];
+	for(var i=0;i<meetingDeptData.labels.length;i++){
+		var barPct=meetingDeptData.counts[i]/maxCount*100;
+		html+='<div><div class="flex items-center justify-between text-[10px] mb-0.5"><span class="text-slate-600 font-medium">'+meetingDeptData.labels[i]+'</span><span class="text-slate-500 font-semibold">'+meetingDeptData.counts[i]+'次</span></div>'+
+			'<div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden"><div class="h-full rounded-full transition-all" style="width:'+barPct+'%;background:'+colors[i]+'"></div></div></div>';
+	}
+	html+='</div>';
+	document.getElementById('meetingDeptArea').innerHTML=html;
+}
+
+function renderMeetingTrendChart(){
+	if(window.__charts&&window.__charts.meetingTrend)window.__charts.meetingTrend.destroy();
+	var ctx=document.getElementById('meetingTrendChart').getContext('2d');
+	var d=meetingTrendData;
+	var chart=new Chart(ctx,{
+		type:'line',data:{labels:d.labels,datasets:[
+			{label:'会议次数',data:d.meetings,borderColor:'#3b82f6',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointBackgroundColor:'#3b82f6',borderWidth:2},
+			{label:'决议事项',data:d.resolutions,borderColor:'#22c55e',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointBackgroundColor:'#22c55e',borderWidth:2},
+			{label:'完成率%',data:d.completeRate,borderColor:'#f59e0b',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointBackgroundColor:'#f59e0b',borderWidth:2,borderDash:[3,2],yAxisID:'y1'}
+		]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:10,font:{size:9},usePointStyle:true}}},
+			scales:{
+				x:{grid:{display:false},ticks:{font:{size:9}}},
+				y:{position:'left',grid:{color:'#e2e8f0'},ticks:{font:{size:9}}},
+				y1:{position:'right',grid:{drawOnChartArea:false},min:60,max:85,ticks:{callback:function(v){return v+'%';},font:{size:9}}}
+			}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.meetingTrend=chart;
+}
+
+function renderMeetingTaskTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">决议事项</th><th class="p-1.5 text-center text-slate-400">负责人</th><th class="p-1.5 text-center text-slate-400">部门</th><th class="p-1.5 text-center text-slate-400">截止</th><th class="p-1.5 text-center text-slate-400">状态</th><th class="p-1.5 text-center text-slate-400">剩余</th></tr></thead><tbody>';
+	for(var i=0;i<meetingTaskData.length;i++){
+		var t=meetingTaskData[i];
+		var stCls=t.status==='已完成'?'badge-green':(t.status==='进行中'?'badge-yellow':'badge-red');
+		var priIcon=t.priority==='高'?'<span class="text-red-500">●</span>':(t.priority==='中'?'<span class="text-amber-500">●</span>':'<span class="text-slate-300">●</span>');
+		var daysDisplay=t.status==='已完成'?'✓':(t.daysLeft+'天');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+priIcon+' '+t.task+'</td>'+
+			'<td class="p-1.5 text-center text-slate-600">'+t.owner+'</td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+t.dept+'</td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+t.deadline+'</td>'+
+			'<td class="p-1.5 text-center"><span class="'+stCls+'">'+t.status+'</span></td>'+
+			'<td class="p-1.5 text-center text-slate-700 font-semibold">'+daysDisplay+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('meetingTaskArea').innerHTML=html;
+}
+
+function renderMeetingOverdue(){
+	var html='';
+	for(var i=0;i<meetingOverdueData.length;i++){
+		var o=meetingOverdueData[i];
+		html+='<div class="bg-red-50 rounded-lg p-2 border border-red-100">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[11px] font-medium text-slate-700">'+o.task+'</span><span class="badge-red text-[9px]">超期'+o.overdue+'天</span></div>'+
+			'<div class="flex items-center justify-between text-[9px] text-slate-500"><span>'+o.owner+' · '+o.dept+'</span><span>截止 '+o.deadline+'</span></div>'+
+			'<div class="text-[9px] text-red-400 mt-0.5">原因: '+o.reason+'</div>'+
+		'</div>';
+	}
+	document.getElementById('meetingOverdueArea').innerHTML=html;
+}
+
+function renderMeetingResolutionTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">决议事项</th><th class="p-1.5 text-center text-slate-400">来源会议</th><th class="p-1.5 text-center text-slate-400">负责人</th><th class="p-1.5 text-center text-slate-400">进度</th><th class="p-1.5 text-center text-slate-400">截止</th><th class="p-1.5 text-left text-slate-400">预期影响</th></tr></thead><tbody>';
+	for(var i=0;i<meetingResolutionData.length;i++){
+		var r=meetingResolutionData[i];
+		var prog=parseInt(r.progress);
+		var barColor=prog>=70?'bg-green-500':(prog>=40?'bg-blue-500':'bg-amber-500');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+r.resolution+'</td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+r.meeting+'</td>'+
+			'<td class="p-1.5 text-center text-slate-600">'+r.owner+'</td>'+
+			'<td class="p-1.5 text-center"><div class="flex items-center gap-1"><div class="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden"><div class="'+barColor+' h-full rounded-full" style="width:'+r.progress+'"></div></div><span class="text-[9px] text-slate-500">'+r.progress+'</span></div></td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+r.deadline+'</td>'+
+			'<td class="p-1.5 text-[9px] text-slate-400">'+r.impact+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('meetingResolutionArea').innerHTML=html;
+}
+
+function renderMeetingCalendar(){
+	var html='';
+	var colors=['#3b82f6','#22c55e','#f59e0b','#8b5cf6','#ef4444'];
+	for(var i=0;i<meetingCalendarData.length;i++){
+		var c=meetingCalendarData[i];
+		html+='<div class="flex items-start gap-2 p-2 rounded-lg border border-slate-100 hover:bg-slate-50 transition-colors">'+
+			'<div class="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style="background:'+colors[i]+'"></div>'+
+			'<div class="flex-1 min-w-0"><div class="text-[11px] font-medium text-slate-700">'+c.topic+'</div>'+
+			'<div class="text-[9px] text-slate-400 mt-0.5">'+c.date+' '+c.time+' | '+c.dept+' | '+c.attendees+'</div></div>'+
+		'</div>';
+	}
+	document.getElementById('meetingCalendarArea').innerHTML=html;
+}
+
+
+
+// ===== 任务与协同数据（食品电商） =====
+var taskKPIs=[
+	{label:'待办任务',value:'42',yoy:'-8',mom:'-5',up:true,icon:'fa-list-ul',color:'#3b82f6',bg:'#eff6ff'},
+	{label:'进行中',value:'18',yoy:'+3',mom:'+2',up:false,icon:'fa-spinner',color:'#f59e0b',bg:'#fffbeb'},
+	{label:'已完成',value:'156',yoy:'+22.5%',mom:'+12.8%',up:true,icon:'fa-check-circle',color:'#22c55e',bg:'#f0fdf4'},
+	{label:'超期任务',value:'5',yoy:'-3',mom:'-2',up:true,icon:'fa-exclamation-circle',color:'#ef4444',bg:'#fef2f2'},
+	{label:'协作消息',value:'1,286',yoy:'+18.5%',mom:'+8.2%',up:true,icon:'fa-comments',color:'#8b5cf6',bg:'#f5f3ff'},
+	{label:'共享文档',value:'328',yoy:'+25.6%',mom:'+5.8%',up:true,icon:'fa-file-text-o',color:'#06b6d4',bg:'#ecfeff'},
+	{label:'会议纪要',value:'86',yoy:'+12.5%',mom:'+3.2%',up:true,icon:'fa-file-text',color:'#14b8a6',bg:'#f0fdfa'},
+	{label:'审批效率',value:'4.2h',yoy:'-1.5h',mom:'-0.5h',up:true,icon:'fa-clock-o',color:'#ec4899',bg:'#fdf2f8'}
+];
+
+var taskStatusData=[
+	{label:'已完成',count:156,pct:62.4,color:'#22c55e'},
+	{label:'进行中',count:42,pct:16.8,color:'#3b82f6'},
+	{label:'待启动',count:28,pct:11.2,color:'#f59e0b'},
+	{label:'已延期',count:24,pct:9.6,color:'#ef4444'}
+];
+var taskTotalCount=250;
+
+var taskDeptCollab=[
+	{dept:'运营部',tasks:38,collab:256,score:92.5},
+	{dept:'销售部',tasks:32,collab:218,score:88.6},
+	{dept:'供应链',tasks:28,collab:196,score:85.2},
+	{dept:'市场部',tasks:25,collab:178,score:82.5},
+	{dept:'财务部',tasks:22,collab:152,score:78.8},
+	{dept:'技术部',tasks:18,collab:128,score:75.6}
+];
+
+var taskTrendData={
+	labels:['1月','2月','3月','4月','5月','6月'],
+	completed:[128,135,142,148,152,156],
+	created:[28,30,32,35,38,42],
+	overdue:[12,10,9,8,6,5]
+};
+
+var taskListData=[
+	{task:'冷链物流成本优化',project:'供应链优化',owner:'赵磊',priority:'高',deadline:'07-12',status:'进行中',progress:'65%'},
+	{task:'抖音达人续约谈判',project:'渠道拓展',owner:'郑浩',priority:'高',deadline:'07-10',status:'进行中',progress:'80%'},
+	{task:'小程序2.0上线',project:'技术升级',owner:'周杰',priority:'高',deadline:'07-20',status:'进行中',progress:'45%'},
+	{task:'Q3营销方案制定',project:'品牌推广',owner:'陈静',priority:'中',deadline:'07-18',status:'待启动',progress:'0%'},
+	{task:'客户满意度调研',project:'服务提升',owner:'王小明',priority:'中',deadline:'07-25',status:'待启动',progress:'0%'},
+	{task:'供应商评估报告',project:'供应链优化',owner:'吴婷',priority:'中',deadline:'07-15',status:'进行中',progress:'55%'}
+];
+
+var taskProjectData=[
+	{project:'供应链优化',owner:'赵磊',tasks:12,done:8,progress:'67%',nextMilestone:'07-15 方案评审'},
+	{project:'渠道拓展',owner:'郑浩',tasks:8,done:6,progress:'75%',nextMilestone:'07-10 达人签约'},
+	{project:'技术升级',owner:'周杰',tasks:10,done:4,progress:'40%',nextMilestone:'07-20 灰度发布'},
+	{project:'品牌推广',owner:'陈静',tasks:6,done:1,progress:'17%',nextMilestone:'07-18 方案定稿'}
+];
+
+// ===== 组织人效数据 =====
+var orgKPIs=[
+	{label:'员工总数',value:'586',yoy:'+8.5%',mom:'+2.1%',up:false,icon:'fa-users',color:'#3b82f6',bg:'#eff6ff'},
+	{label:'人均产出',value:'¥14.6万',yoy:'+12.5%',mom:'+5.2%',up:true,icon:'fa-line-chart',color:'#22c55e',bg:'#f0fdf4'},
+	{label:'人效比',value:'3.82',yoy:'+0.25',mom:'+0.08',up:true,icon:'fa-bar-chart',color:'#06b6d4',bg:'#ecfeff'},
+	{label:'加班时长',value:'18.5h',yoy:'-3.2h',mom:'-1.5h',up:true,icon:'fa-clock-o',color:'#f59e0b',bg:'#fffbeb'},
+	{label:'培训覆盖率',value:'92.5%',yoy:'+6.8pp',mom:'+2.2pp',up:true,icon:'fa-graduation-cap',color:'#8b5cf6',bg:'#f5f3ff'},
+	{label:'员工流失率',value:'8.2%',yoy:'-1.5pp',mom:'-0.5pp',up:true,icon:'fa-sign-out',color:'#ef4444',bg:'#fef2f2'},
+	{label:'招聘达成率',value:'85.6%',yoy:'+5.2pp',mom:'+3.1pp',up:true,icon:'fa-user-plus',color:'#14b8a6',bg:'#f0fdfa'},
+	{label:'薪酬占比',value:'32.5%',yoy:'-2.1pp',mom:'-0.8pp',up:true,icon:'fa-money',color:'#ec4899',bg:'#fdf2f8'}
+];
+
+var orgDeptEfficiency=[
+	{dept:'运营部',headcount:86,revenue:'¥1,280万',perCapita:'14.9万',score:92},
+	{dept:'销售部',headcount:72,revenue:'¥1,850万',perCapita:'25.7万',score:95},
+	{dept:'供应链',headcount:58,revenue:'¥620万',perCapita:'10.7万',score:78},
+	{dept:'市场部',headcount:42,revenue:'¥580万',perCapita:'13.8万',score:85},
+	{dept:'财务部',headcount:28,revenue:'¥320万',perCapita:'11.4万',score:82},
+	{dept:'技术部',headcount:52,revenue:'¥480万',perCapita:'9.2万',score:72}
+];
+
+var orgPerformanceData=[
+	{label:'S级(卓越)',count:28,pct:4.8,color:'#8b5cf6'},
+	{label:'A级(优秀)',count:86,pct:14.7,color:'#22c55e'},
+	{label:'B级(良好)',count:285,pct:48.6,color:'#3b82f6'},
+	{label:'C级(待提升)',count:156,pct:26.6,color:'#f59e0b'},
+	{label:'D级(不合格)',count:31,pct:5.3,color:'#ef4444'}
+];
+var orgTotalStaff=586;
+
+var orgRecruitData=[
+	{position:'运营经理',dept:'运营部',need:3,hired:2,status:'招聘中',days:28},
+	{position:'Java开发',dept:'技术部',need:5,hired:3,status:'招聘中',days:35},
+	{position:'供应链专员',dept:'供应链',need:2,hired:2,status:'已完成',days:22},
+	{position:'直播运营',dept:'市场部',need:4,hired:1,status:'招聘中',days:15},
+	{position:'成本会计',dept:'财务部',need:1,hired:0,status:'待启动',days:0}
+];
+
+// ===== 数据中心 =====
+var dataKPIs=[
+	{label:'数据总量',value:'586TB',yoy:'+32.5%',mom:'+8.2%',up:false,icon:'fa-database',color:'#3b82f6',bg:'#eff6ff'},
+	{label:'日增数据',value:'2.8TB',yoy:'+18.5%',mom:'+5.1%',up:false,icon:'fa-upload',color:'#22c55e',bg:'#f0fdf4'},
+	{label:'API调用',value:'128万',yoy:'+25.6%',mom:'+8.5%',up:true,icon:'fa-plug',color:'#06b6d4',bg:'#ecfeff'},
+	{label:'活跃报表',value:'86',yoy:'+12.5%',mom:'+3.2%',up:true,icon:'fa-bar-chart',color:'#8b5cf6',bg:'#f5f3ff'},
+	{label:'数据质量',value:'98.5%',yoy:'+1.2pp',mom:'+0.3pp',up:true,icon:'fa-check-square-o',color:'#14b8a6',bg:'#f0fdfa'},
+	{label:'查询耗时',value:'285ms',yoy:'-45ms',mom:'-15ms',up:true,icon:'fa-tachometer',color:'#f59e0b',bg:'#fffbeb'},
+	{label:'存储使用',value:'72.5%',yoy:'+8.2pp',mom:'+2.5pp',up:false,icon:'fa-hdd-o',color:'#ef4444',bg:'#fef2f2'},
+	{label:'活跃用户',value:'386',yoy:'+18.5%',mom:'+5.8%',up:true,icon:'fa-user-o',color:'#ec4899',bg:'#fdf2f8'}
+];
+
+var dataSourceDist=[
+	{label:'订单系统',pct:32.5,color:'#3b82f6'},
+	{label:'仓储WMS',pct:22.8,color:'#22c55e'},
+	{label:'CRM系统',pct:18.6,color:'#f59e0b'},
+	{label:'财务ERP',pct:14.2,color:'#8b5cf6'},
+	{label:'其他来源',pct:11.9,color:'#94a3b8'}
+];
+
+var dataETLTasks=[
+	{name:'订单增量同步',schedule:'每5分钟',lastRun:'07-15 10:25',status:'正常',duration:'12s',rows:'86.5万'},
+	{name:'库存盘点快照',schedule:'每日02:00',lastRun:'07-15 02:00',status:'正常',duration:'3min',rows:'152万'},
+	{name:'客户画像更新',schedule:'每日04:00',lastRun:'07-15 04:00',status:'正常',duration:'8min',rows:'38.6万'},
+	{name:'销售报表生成',schedule:'每日06:00',lastRun:'07-15 06:00',status:'正常',duration:'2min',rows:'12.8万'},
+	{name:'财务对账导出',schedule:'每日08:00',lastRun:'07-15 08:00',status:'延迟',duration:'15min',rows:'8.5万'}
+];
+
+var dataReportRank=[
+	{name:'销售日报',views:1286,creator:'运营部',updated:'2026-07-15'},
+	{name:'库存周转分析',views:956,creator:'供应链',updated:'2026-07-14'},
+	{name:'渠道销售对比',views:856,creator:'销售部',updated:'2026-07-15'},
+	{name:'客户复购报告',views:728,creator:'市场部',updated:'2026-07-13'},
+	{name:'财务损益表',views:685,creator:'财务部',updated:'2026-07-15'}
+];
+
+var dataStorageData=[
+	{label:'订单数据',size:186,pct:31.7,color:'#3b82f6'},
+	{label:'日志数据',size:128,pct:21.8,color:'#f59e0b'},
+	{label:'用户行为',size:108,pct:18.4,color:'#22c55e'},
+	{label:'商品数据',size:86,pct:14.7,color:'#8b5cf6'},
+	{label:'其他',size:78,pct:13.4,color:'#94a3b8'}
+];
+var dataStorageTotal=586;
+
+// ===== 目标管理数据 =====
+var targetKPIs=[
+	{label:'年度目标',value:'¥1.2亿',yoy:'+15.0%',mom:'—',up:true,icon:'fa-flag',color:'#3b82f6',bg:'#eff6ff'},
+	{label:'Q2完成额',value:'¥3,280万',yoy:'+18.5%',mom:'+12.8%',up:true,icon:'fa-trophy',color:'#22c55e',bg:'#f0fdf4'},
+	{label:'月度完成率',value:'92.5%',yoy:'+5.2pp',mom:'+2.1pp',up:true,icon:'fa-bullseye',color:'#06b6d4',bg:'#ecfeff'},
+	{label:'目标达成数',value:'8/12',yoy:'+2',mom:'+1',up:true,icon:'fa-check-square',color:'#8b5cf6',bg:'#f5f3ff'},
+	{label:'偏差率',value:'3.5%',yoy:'-1.2pp',mom:'-0.5pp',up:true,icon:'fa-adjust',color:'#f59e0b',bg:'#fffbeb'},
+	{label:'重点项目',value:'18',yoy:'+3',mom:'+2',up:false,icon:'fa-star',color:'#ef4444',bg:'#fef2f2'},
+	{label:'里程碑完成',value:'28/36',yoy:'+5',mom:'+3',up:true,icon:'fa-flag-checkered',color:'#14b8a6',bg:'#f0fdfa'},
+	{label:'年度预测',value:'96.8%',yoy:'+2.5pp',mom:'+0.8pp',up:true,icon:'fa-eye',color:'#ec4899',bg:'#fdf2f8'}
+];
+
+var targetDeptProgress=[
+	{dept:'天猫旗舰店',target:2800,actual:2650,rate:'94.6%'},
+	{dept:'京东自营',target:2200,actual:2120,rate:'96.4%'},
+	{dept:'抖音小店',target:1800,actual:1680,rate:'93.3%'},
+	{dept:'拼多多',target:1200,actual:1080,rate:'90.0%'},
+	{dept:'小红书',target:800,actual:720,rate:'90.0%'},
+	{dept:'线下团购',target:600,actual:580,rate:'96.7%'}
+];
+
+var targetMonthlyTrend={
+	labels:['1月','2月','3月','4月','5月','6月'],
+	target:[1580,1680,1750,1820,1900,1980],
+	actual:[1520,1550,1680,1750,1820,1920],
+	rate:[96.2,92.3,96.0,96.2,95.8,97.0]
+};
+
+var targetProjects=[
+	{project:'退货流程线上化',owner:'王小明',target:'Q3上线',progress:'60%',status:'正常'},
+	{project:'冷链物流降本20%',owner:'赵磊',target:'年度目标',progress:'45%',status:'正常'},
+	{project:'抖音GMV翻倍',owner:'郑浩',target:'Q4达成',progress:'72%',status:'正常'},
+	{project:'拼多多品牌旗舰店',owner:'张伟',target:'9月开业',progress:'25%',status:'延迟'},
+	{project:'自有品牌孵化',owner:'陈静',target:'Q4上市',progress:'35%',status:'正常'}
+];
+
+var targetOKRData=[
+	{objective:'提升客户满意度至4.75',owner:'王小明',kr1:'投诉率降至0.3%',kr1p:'75%',kr2:'NPS提升至75',kr2p:'68%',kr3:'复购率提升至42%',kr3p:'85%'},
+	{objective:'供应链效率提升20%',owner:'赵磊',kr1:'库存周转降至35天',kr1p:'62%',kr2:'物流成本降10%',kr2p:'58%',kr3:'缺货率降至1.5%',kr3p:'80%'},
+	{objective:'新渠道收入占比25%',owner:'郑浩',kr1:'抖音GMV增50%',kr1p:'72%',kr2:'拼多多月销200万',kr2p:'45%',kr3:'小红书日销5万',kr3p:'90%'}
+];
+
+// ===== 任务与协同布局 =====
+function buildTaskLayoutHTML(){
+	return ''+
+	'<div class="space-y-3">'+
+		'<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2" id="taskKpiRow"></div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">任务状态分布</h3><span class="text-[10px] text-slate-400">总任务 '+taskTotalCount+' 项</span></div>'+
+				'<div class="flex items-center gap-3 flex-1">'+
+					'<div class="relative flex-shrink-0" style="width:130px;height:130px"><canvas id="taskStatusChart"></canvas></div>'+
+					'<div class="flex-1 min-w-0" id="taskStatusLegend"></div>'+
+				'</div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">部门协作热度</h3><span class="text-[10px] text-slate-400">任务数 & 协作消息</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="taskDeptCollabArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">任务趋势</h3><span class="text-[10px] text-slate-400">近6个月</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="taskTrendChart"></canvas></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-7 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">重点任务清单</h3><span class="text-[10px] text-slate-400">共 '+taskListData.length+' 项</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="taskListArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">项目进度跟踪</h3><span class="text-[10px] text-slate-400">当前进行中项目</span></div>'+
+				'<div class="flex-1 space-y-2" id="taskProjectArea"></div>'+
+			'</div>'+
+		'</div>'+
+	'</div>';
+}
+
+function renderTaskKPIs(){
+	var html='';
+	for(var i=0;i<taskKPIs.length;i++){
+		var k=taskKPIs[i];
+		html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[10px] text-slate-400 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+			'<div class="text-lg font-bold text-slate-800 mb-1">'+k.value+'</div>'+
+			'<div class="flex flex-col text-[10px]">'+
+				'<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">同比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.yoy+'</span></div>'+
+				'<div class="flex justify-between py-0.5"><span class="text-slate-400">环比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.mom+'</span></div>'+
+			'</div></div>';
+	}
+	document.getElementById('taskKpiRow').innerHTML=html;
+}
+
+function renderTaskStatusChart(){
+	if(window.__charts&&window.__charts.taskStatus)window.__charts.taskStatus.destroy();
+	var ctx=document.getElementById('taskStatusChart').getContext('2d');
+	var labels=[],values=[],colors=[];
+	for(var i=0;i<taskStatusData.length;i++){labels.push(taskStatusData[i].label);values.push(taskStatusData[i].pct);colors.push(taskStatusData[i].color);}
+	var chart=new Chart(ctx,{
+		type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
+		options:{responsive:true,maintainAspectRatio:true,cutout:'55%',plugins:{legend:{display:false}}},
+		plugins:[{id:'taskStatusCenter',afterDraw:function(chart){
+			var ctx2=chart.ctx;ctx2.save();ctx2.textAlign='center';ctx2.textBaseline='middle';
+			ctx2.font='bold 15px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#1e293b';
+			ctx2.fillText(taskTotalCount+'项',chart.width/2,chart.height/2-3);
+			ctx2.font='10px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#94a3b8';
+			ctx2.fillText('总任务数',chart.width/2,chart.height/2+14);ctx2.restore();
+		}}]
+	});
+	if(!window.__charts)window.__charts={};window.__charts.taskStatus=chart;
+	var leg='';
+	for(var j=0;j<taskStatusData.length;j++){var d=taskStatusData[j];
+		leg+='<div class="flex items-center justify-between py-0.5"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:'+d.color+'"></span><span class="text-[11px] text-slate-600">'+d.label+'</span></div><span class="text-[11px]"><span class="font-semibold text-slate-700">'+d.count+'</span><span class="text-slate-400 ml-1">'+d.pct.toFixed(1)+'%</span></span></div>';
+	}
+	document.getElementById('taskStatusLegend').innerHTML=leg;
+}
+
+function renderTaskDeptCollab(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">部门</th><th class="p-1.5 text-right text-slate-400">任务数</th><th class="p-1.5 text-right text-slate-400">协作消息</th><th class="p-1.5 text-right text-slate-400">协同评分</th></tr></thead><tbody>';
+	for(var i=0;i<taskDeptCollab.length;i++){
+		var d=taskDeptCollab[i];
+		var cls=d.score>=90?'kpi-up':(d.score>=80?'kpi-warn':'kpi-down');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+d.dept+'</td>'+
+			'<td class="p-1.5 text-right text-slate-600">'+d.tasks+'</td>'+
+			'<td class="p-1.5 text-right text-slate-600">'+d.collab+'</td>'+
+			'<td class="p-1.5 text-right font-semibold '+cls+'">'+d.score+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('taskDeptCollabArea').innerHTML=html;
+}
+
+function renderTaskTrendChart(){
+	if(window.__charts&&window.__charts.taskTrend)window.__charts.taskTrend.destroy();
+	var ctx=document.getElementById('taskTrendChart').getContext('2d');
+	var d=taskTrendData;
+	var chart=new Chart(ctx,{
+		type:'line',data:{labels:d.labels,datasets:[
+			{label:'已完成',data:d.completed,borderColor:'#22c55e',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointBackgroundColor:'#22c55e',borderWidth:2},
+			{label:'新建任务',data:d.created,borderColor:'#3b82f6',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointBackgroundColor:'#3b82f6',borderWidth:2},
+			{label:'超期',data:d.overdue,borderColor:'#ef4444',backgroundColor:'transparent',tension:0.3,pointRadius:3,pointBackgroundColor:'#ef4444',borderWidth:2}
+		]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:10,font:{size:9},usePointStyle:true}}},
+			scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#e2e8f0'},ticks:{font:{size:9}}}}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.taskTrend=chart;
+}
+
+function renderTaskListTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">任务</th><th class="p-1.5 text-center text-slate-400">项目</th><th class="p-1.5 text-center text-slate-400">负责人</th><th class="p-1.5 text-center text-slate-400">优先级</th><th class="p-1.5 text-center text-slate-400">截止</th><th class="p-1.5 text-center text-slate-400">状态</th><th class="p-1.5 text-center text-slate-400">进度</th></tr></thead><tbody>';
+	for(var i=0;i<taskListData.length;i++){
+		var t=taskListData[i];
+		var priCls=t.priority==='高'?'badge-red':(t.priority==='中'?'badge-yellow':'badge-blue');
+		var stCls=t.status==='进行中'?'badge-yellow':(t.status==='待启动'?'badge-red':'badge-green');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+t.task+'</td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+t.project+'</td>'+
+			'<td class="p-1.5 text-center text-slate-600">'+t.owner+'</td>'+
+			'<td class="p-1.5 text-center"><span class="'+priCls+'">'+t.priority+'</span></td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+t.deadline+'</td>'+
+			'<td class="p-1.5 text-center"><span class="'+stCls+'">'+t.status+'</span></td>'+
+			'<td class="p-1.5 text-center text-slate-700 font-semibold">'+t.progress+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('taskListArea').innerHTML=html;
+}
+
+function renderTaskProjects(){
+	var html='';
+	for(var i=0;i<taskProjectData.length;i++){
+		var p=taskProjectData[i];
+		var prog=parseInt(p.progress);
+		var barColor=prog>=70?'bg-green-500':(prog>=40?'bg-blue-500':'bg-amber-500');
+		html+='<div class="border border-slate-100 rounded-lg p-2">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[11px] font-medium text-slate-700">'+p.project+'</span><span class="text-[10px] text-slate-400">'+p.owner+'</span></div>'+
+			'<div class="flex items-center gap-2 mb-1"><div class="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden"><div class="'+barColor+' h-full rounded-full" style="width:'+p.progress+'"></div></div><span class="text-[10px] font-semibold text-slate-700">'+p.progress+'</span></div>'+
+			'<div class="flex justify-between text-[9px] text-slate-400"><span>'+p.done+'/'+p.tasks+' 项完成</span><span>下一节点: '+p.nextMilestone+'</span></div>'+
+		'</div>';
+	}
+	document.getElementById('taskProjectArea').innerHTML=html;
+}
+
+// ===== 组织人效布局 =====
+function buildOrgLayoutHTML(){
+	return ''+
+	'<div class="space-y-3">'+
+		'<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2" id="orgKpiRow"></div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">部门人效对比</h3><span class="text-[10px] text-slate-400">人均产出(万元)</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="orgDeptChart"></canvas></div>'+
+			'</div>'+
+			'<div class="lg:col-span-3 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">绩效分布</h3><span class="text-[10px] text-slate-400">'+orgTotalStaff+'名员工</span></div>'+
+				'<div class="flex items-center gap-3 flex-1">'+
+					'<div class="relative flex-shrink-0" style="width:120px;height:120px"><canvas id="orgPerformanceChart"></canvas></div>'+
+					'<div class="flex-1 min-w-0" id="orgPerformanceLegend"></div>'+
+				'</div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">招聘进度</h3><span class="text-[10px] text-slate-400">当前需求跟踪</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="orgRecruitArea"></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">人效趋势</h3><span class="text-[10px] text-slate-400">近6个月</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="orgTrendChart"></canvas></div>'+
+			'</div>'+
+			'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">培训与人员流动</h3><span class="text-[10px] text-slate-400">本月统计</span></div>'+
+				'<div class="flex-1 grid grid-cols-2 gap-3">'+
+					'<div class="bg-blue-50 rounded-xl p-3 border border-blue-100 flex flex-col justify-center text-center">'+
+						'<div class="text-[10px] text-blue-500 mb-1">本月培训</div><div class="text-lg font-bold text-blue-700">12场</div><div class="text-[10px] text-blue-500 mt-1">覆盖 486人</div><div class="text-[10px] text-blue-400">满意度 4.82</div></div>'+
+					'<div class="bg-green-50 rounded-xl p-3 border border-green-100 flex flex-col justify-center text-center">'+
+						'<div class="text-[10px] text-green-500 mb-1">人员流动</div><div class="text-lg font-bold text-green-700">入职8人</div><div class="text-[10px] text-green-500 mt-1">离职5人</div><div class="text-[10px] text-green-400">净增 +3人</div></div>'+
+				'</div>'+
+			'</div>'+
+		'</div>'+
+	'</div>';
+}
+
+function renderOrgKPIs(){
+	var html='';
+	for(var i=0;i<orgKPIs.length;i++){
+		var k=orgKPIs[i];
+		html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[10px] text-slate-400 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+			'<div class="text-lg font-bold text-slate-800 mb-1">'+k.value+'</div>'+
+			'<div class="flex flex-col text-[10px]">'+
+				'<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">同比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.yoy+'</span></div>'+
+				'<div class="flex justify-between py-0.5"><span class="text-slate-400">环比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.mom+'</span></div>'+
+			'</div></div>';
+	}
+	document.getElementById('orgKpiRow').innerHTML=html;
+}
+
+function renderOrgDeptChart(){
+	var labels=[],values=[],bgColors=[];
+	for(var i=0;i<orgDeptEfficiency.length;i++){labels.push(orgDeptEfficiency[i].dept);values.push(parseFloat(orgDeptEfficiency[i].perCapita));bgColors.push(orgDeptEfficiency[i].score>=90?'#22c55e':(orgDeptEfficiency[i].score>=80?'#3b82f6':'#f59e0b'));}
+	var chart=new Chart(document.getElementById('orgDeptChart').getContext('2d'),{
+		type:'bar',data:{labels:labels,datasets:[{data:values,backgroundColor:bgColors,borderRadius:4}]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{display:false}},
+			scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#e2e8f0'},ticks:{font:{size:9},callback:function(v){return v+'万'}}}}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.orgDept=chart;
+}
+
+function renderOrgPerformanceChart(){
+	if(window.__charts&&window.__charts.orgPerf)window.__charts.orgPerf.destroy();
+	var ctx=document.getElementById('orgPerformanceChart').getContext('2d');
+	var labels=[],values=[],colors=[];
+	for(var i=0;i<orgPerformanceData.length;i++){labels.push(orgPerformanceData[i].label);values.push(orgPerformanceData[i].pct);colors.push(orgPerformanceData[i].color);}
+	var chart=new Chart(ctx,{
+		type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
+		options:{responsive:true,maintainAspectRatio:true,cutout:'55%',plugins:{legend:{display:false}}},
+		plugins:[{id:'orgPerfCenter',afterDraw:function(chart){
+			var ctx2=chart.ctx;ctx2.save();ctx2.textAlign='center';ctx2.textBaseline='middle';
+			ctx2.font='bold 15px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#1e293b';
+			ctx2.fillText(orgTotalStaff+'人',chart.width/2,chart.height/2-3);
+			ctx2.font='10px -apple-system,BlinkMacSystemFont,sans-serif';ctx2.fillStyle='#94a3b8';
+			ctx2.fillText('总人数',chart.width/2,chart.height/2+14);ctx2.restore();
+		}}]
+	});
+	if(!window.__charts)window.__charts={};window.__charts.orgPerf=chart;
+	var leg='';
+	for(var j=0;j<orgPerformanceData.length;j++){var d=orgPerformanceData[j];
+		leg+='<div class="flex items-center justify-between py-0.5"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:'+d.color+'"></span><span class="text-[11px] text-slate-600">'+d.label+'</span></div><span class="text-[11px]"><span class="font-semibold text-slate-700">'+d.count+'人</span><span class="text-slate-400 ml-1">'+d.pct.toFixed(1)+'%</span></span></div>';
+	}
+	document.getElementById('orgPerformanceLegend').innerHTML=leg;
+}
+
+function renderOrgRecruitTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">岗位</th><th class="p-1.5 text-center text-slate-400">部门</th><th class="p-1.5 text-center text-slate-400">需求</th><th class="p-1.5 text-center text-slate-400">已招</th><th class="p-1.5 text-center text-slate-400">状态</th><th class="p-1.5 text-center text-slate-400">周期(天)</th></tr></thead><tbody>';
+	for(var i=0;i<orgRecruitData.length;i++){
+		var r=orgRecruitData[i];
+		var stCls=r.status==='已完成'?'badge-green':(r.status==='招聘中'?'badge-yellow':'badge-red');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+r.position+'</td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+r.dept+'</td>'+
+			'<td class="p-1.5 text-center text-slate-600">'+r.need+'</td>'+
+			'<td class="p-1.5 text-center text-slate-700 font-semibold">'+r.hired+'</td>'+
+			'<td class="p-1.5 text-center"><span class="'+stCls+'">'+r.status+'</span></td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+r.days+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('orgRecruitArea').innerHTML=html;
+}
+
+function renderOrgTrendChart(){
+	if(window.__charts&&window.__charts.orgTrend)window.__charts.orgTrend.destroy();
+	var ctx=document.getElementById('orgTrendChart').getContext('2d');
+	var chart=new Chart(ctx,{
+		type:'line',data:{labels:['1月','2月','3月','4月','5月','6月'],datasets:[
+			{label:'人效比',data:[3.52,3.58,3.65,3.72,3.78,3.82],borderColor:'#3b82f6',tension:0.3,pointRadius:3,borderWidth:2},
+			{label:'培训覆盖(%)',data:[85,87,88,90,91,92.5],borderColor:'#22c55e',tension:0.3,pointRadius:3,borderWidth:2,yAxisID:'y1'},
+			{label:'流失率(%)',data:[10.2,9.8,9.5,9.0,8.6,8.2],borderColor:'#ef4444',tension:0.3,pointRadius:3,borderWidth:2,yAxisID:'y1'}
+		]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:10,font:{size:9},usePointStyle:true}}},
+			scales:{
+				x:{grid:{display:false},ticks:{font:{size:9}}},
+				y:{position:'left',grid:{color:'#e2e8f0'},ticks:{font:{size:9}}},
+				y1:{position:'right',grid:{drawOnChartArea:false},min:0,max:100,ticks:{callback:function(v){return v+'%';},font:{size:9}}}
+			}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.orgTrend=chart;
+}
+
+// ===== 数据中心布局 =====
+function buildDataLayoutHTML(){
+	return ''+
+	'<div class="space-y-3">'+
+		'<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2" id="dataKpiRow"></div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">数据源分布</h3><span class="text-[10px] text-slate-400">数据总量 '+dataStorageTotal+'TB</span></div>'+
+				'<div class="flex items-center gap-3 flex-1">'+
+					'<div class="relative flex-shrink-0" style="width:130px;height:130px"><canvas id="dataSourceChart"></canvas></div>'+
+					'<div class="flex-1 min-w-0" id="dataSourceLegend"></div>'+
+				'</div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">ETL任务状态</h3><span class="text-[10px] text-slate-400">实时监控</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="dataETLArea"></div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">报表访问排行</h3><span class="text-[10px] text-slate-400">本月PV</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="dataReportArea"></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">数据接入趋势</h3><span class="text-[10px] text-slate-400">近6个月</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="dataTrendChart"></canvas></div>'+
+			'</div>'+
+			'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">存储分布</h3><span class="text-[10px] text-slate-400">'+dataStorageTotal+'TB总量</span></div>'+
+				'<div class="flex-1" id="dataStorageArea"></div>'+
+			'</div>'+
+		'</div>'+
+	'</div>'+
+	'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+		'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+			'<div class="mb-2"><h3 class="section-title">数据质量监控</h3><span class="text-[10px] text-slate-400">质量指标实时状态</span></div>'+
+			'<div class="flex-1 space-y-2">'+
+				'<div class="flex items-center justify-between text-[11px] py-1 border-b border-slate-50"><span class="text-slate-600">完整性</span><span class="font-semibold text-green-500">99.2%</span><span class="badge-green">优</span></div>'+
+				'<div class="flex items-center justify-between text-[11px] py-1 border-b border-slate-50"><span class="text-slate-600">准确性</span><span class="font-semibold text-green-500">98.8%</span><span class="badge-green">优</span></div>'+
+				'<div class="flex items-center justify-between text-[11px] py-1 border-b border-slate-50"><span class="text-slate-600">及时性</span><span class="font-semibold text-amber-500">96.5%</span><span class="badge-yellow">良</span></div>'+
+				'<div class="flex items-center justify-between text-[11px] py-1 border-b border-slate-50"><span class="text-slate-600">一致性</span><span class="font-semibold text-amber-500">95.8%</span><span class="badge-yellow">良</span></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="lg:col-span-6 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+			'<div class="mb-2"><h3 class="section-title">慢查询 TOP5</h3><span class="text-[10px] text-slate-400">需优化的查询</span></div>'+
+			'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="dataSlowQueryArea"></div>'+
+		'</div>'+
+	'</div>'+
+'</div>';
+}
+
+function renderDataKPIs(){
+	var html='';
+	for(var i=0;i<dataKPIs.length;i++){
+		var k=dataKPIs[i];
+		html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[10px] text-slate-400 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+			'<div class="text-lg font-bold text-slate-800 mb-1">'+k.value+'</div>'+
+			'<div class="flex flex-col text-[10px]">'+
+				'<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">同比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.yoy+'</span></div>'+
+				'<div class="flex justify-between py-0.5"><span class="text-slate-400">环比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.mom+'</span></div>'+
+			'</div></div>';
+	}
+	document.getElementById('dataKpiRow').innerHTML=html;
+}
+
+function renderDataSourceChart(){
+	if(window.__charts&&window.__charts.dataSource)window.__charts.dataSource.destroy();
+	var ctx=document.getElementById('dataSourceChart').getContext('2d');
+	var labels=[],values=[],colors=[];
+	for(var i=0;i<dataSourceDist.length;i++){labels.push(dataSourceDist[i].label);values.push(dataSourceDist[i].pct);colors.push(dataSourceDist[i].color);}
+	var chart=new Chart(ctx,{
+		type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:colors,borderColor:'#fff',borderWidth:2}]},
+		options:{responsive:true,maintainAspectRatio:true,cutout:'55%',plugins:{legend:{display:false}}}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.dataSource=chart;
+	var leg='';
+	for(var j=0;j<dataSourceDist.length;j++){var d=dataSourceDist[j];
+		leg+='<div class="flex items-center justify-between py-0.5"><div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:'+d.color+'"></span><span class="text-[11px] text-slate-600">'+d.label+'</span></div><span class="text-[11px] font-semibold text-slate-700">'+d.pct.toFixed(1)+'%</span></div>';
+	}
+	document.getElementById('dataSourceLegend').innerHTML=leg;
+}
+
+function renderDataETLTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1 text-left text-slate-400">任务名</th><th class="p-1 text-center text-slate-400">调度</th><th class="p-1 text-center text-slate-400">状态</th><th class="p-1 text-right text-slate-400">耗时</th><th class="p-1 text-right text-slate-400">行数</th></tr></thead><tbody>';
+	for(var i=0;i<dataETLTasks.length;i++){
+		var e=dataETLTasks[i];
+		var stCls=e.status==='正常'?'badge-green':'badge-red';
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1 text-slate-700 font-medium">'+e.name+'</td>'+
+			'<td class="p-1 text-center text-slate-500">'+e.schedule+'</td>'+
+			'<td class="p-1 text-center"><span class="'+stCls+'">'+e.status+'</span></td>'+
+			'<td class="p-1 text-right text-slate-600">'+e.duration+'</td>'+
+			'<td class="p-1 text-right text-slate-700 font-semibold">'+e.rows+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('dataETLArea').innerHTML=html;
+}
+
+function renderDataReportTable(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">报表名称</th><th class="p-1.5 text-right text-slate-400">PV</th><th class="p-1.5 text-center text-slate-400">创建部门</th><th class="p-1.5 text-right text-slate-400">更新日期</th></tr></thead><tbody>';
+	for(var i=0;i<dataReportRank.length;i++){
+		var r=dataReportRank[i];
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+(i+1)+'. '+r.name+'</td>'+
+			'<td class="p-1.5 text-right text-slate-700 font-semibold">'+r.views+'</td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+r.creator+'</td>'+
+			'<td class="p-1.5 text-right text-slate-500">'+r.updated+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('dataReportArea').innerHTML=html;
+}
+
+function renderDataTrendChart(){
+	if(window.__charts&&window.__charts.dataTrend)window.__charts.dataTrend.destroy();
+	var ctx=document.getElementById('dataTrendChart').getContext('2d');
+	var chart=new Chart(ctx,{
+		type:'line',data:{labels:['1月','2月','3月','4月','5月','6月'],datasets:[
+			{label:'数据总量(TB)',data:[420,452,486,512,548,586],borderColor:'#3b82f6',tension:0.3,pointRadius:3,borderWidth:2},
+			{label:'日增(GB)',data:[1860,1950,2120,2350,2580,2800],borderColor:'#22c55e',tension:0.3,pointRadius:3,borderWidth:2,yAxisID:'y1'}
+		]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:10,font:{size:9},usePointStyle:true}}},
+			scales:{
+				x:{grid:{display:false},ticks:{font:{size:9}}},
+				y:{position:'left',grid:{color:'#e2e8f0'},ticks:{callback:function(v){return v+'TB';},font:{size:9}}},
+				y1:{position:'right',grid:{drawOnChartArea:false},ticks:{callback:function(v){return v+'GB';},font:{size:9}}}
+			}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.dataTrend=chart;
+}
+
+function renderDataStorage(){
+	var html='<div class="space-y-1.5 p-2">';
+	var colors=['#3b82f6','#f59e0b','#22c55e','#8b5cf6','#94a3b8'];
+	for(var i=0;i<dataStorageData.length;i++){
+		var d=dataStorageData[i];
+		var barPct=d.size/dataStorageTotal*100;
+		html+='<div><div class="flex items-center justify-between text-[10px] mb-0.5"><span class="text-slate-600 font-medium">'+d.label+'</span><span class="text-slate-500">'+d.size+'TB ('+d.pct.toFixed(1)+'%)</span></div>'+
+			'<div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden"><div class="h-full rounded-full" style="width:'+barPct+'%;background:'+d.color+'"></div></div></div>';
+	}
+	html+='</div>';
+	document.getElementById('dataStorageArea').innerHTML=html;
+}
+
+// ===== 目标管理布局 =====
+function buildTargetLayoutHTML(){
+	return ''+
+	'<div class="space-y-3">'+
+		'<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2" id="targetKpiRow"></div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-5 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">部门目标达成对比</h3><span class="text-[10px] text-slate-400">目标vs实际 | 万元</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="targetDeptChart"></canvas></div>'+
+			'</div>'+
+			'<div class="lg:col-span-3 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">月度完成趋势</h3><span class="text-[10px] text-slate-400">目标vs实际vs达成率</span></div>'+
+				'<div class="bg-slate-50 rounded-lg border border-slate-100 p-2 flex-1 relative"><canvas id="targetMonthlyChart"></canvas></div>'+
+			'</div>'+
+			'<div class="lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="mb-2"><h3 class="section-title">重点项目跟踪</h3><span class="text-[10px] text-slate-400">共 '+targetProjects.length+' 个项目</span></div>'+
+				'<div class="flex-1 space-y-2" id="targetProjectsArea"></div>'+
+			'</div>'+
+		'</div>'+
+		'<div class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">'+
+			'<div class="lg:col-span-12 bg-white rounded-xl shadow-sm border border-slate-100 p-3 flex flex-col">'+
+				'<div class="flex items-center justify-between mb-2"><h3 class="section-title">OKR进度跟踪</h3><span class="text-[10px] text-slate-400">季度目标与关键结果</span></div>'+
+				'<div class="rounded-lg border border-slate-100 overflow-hidden bg-white flex-1" id="targetOKRArea"></div>'+
+			'</div>'+
+		'</div>'+
+	'</div>';
+}
+
+function renderTargetKPIs(){
+	var html='';
+	for(var i=0;i<targetKPIs.length;i++){
+		var k=targetKPIs[i];
+		html+='<div class="bg-white rounded-xl shadow-sm p-3 cursor-pointer hover:shadow-md transition-shadow">'+
+			'<div class="flex items-center justify-between mb-1"><span class="text-[10px] text-slate-400 font-medium">'+k.label+'</span><div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:'+k.bg+';color:'+k.color+'"><i class="fa '+k.icon+' text-xs"></i></div></div>'+
+			'<div class="text-lg font-bold text-slate-800 mb-1">'+k.value+'</div>'+
+			'<div class="flex flex-col text-[10px]">'+
+				'<div class="flex justify-between py-0.5 border-b border-slate-50"><span class="text-slate-400">同比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.yoy+'</span></div>'+
+				'<div class="flex justify-between py-0.5"><span class="text-slate-400">环比</span><span class="'+(k.up?'kpi-up':'kpi-down')+' font-medium">'+k.mom+'</span></div>'+
+			'</div></div>';
+	}
+	document.getElementById('targetKpiRow').innerHTML=html;
+}
+
+function renderTargetDeptChart(){
+	var labels=[],actuals=[],targets=[];
+	for(var i=0;i<targetDeptProgress.length;i++){labels.push(targetDeptProgress[i].dept);actuals.push(targetDeptProgress[i].actual);targets.push(targetDeptProgress[i].target);}
+	var chart=new Chart(document.getElementById('targetDeptChart').getContext('2d'),{
+		type:'bar',data:{labels:labels,datasets:[
+			{label:'目标',data:targets,backgroundColor:'rgba(148,163,184,0.4)',borderColor:'#94a3b8',borderWidth:1,borderRadius:2},
+			{label:'实际',data:actuals,backgroundColor:'rgba(59,130,246,0.6)',borderColor:'#3b82f6',borderWidth:1,borderRadius:2}
+		]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:10,font:{size:9},usePointStyle:true}}},
+			scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#e2e8f0'},ticks:{font:{size:9}}}}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.targetDept=chart;
+}
+
+function renderTargetMonthlyChart(){
+	if(window.__charts&&window.__charts.targetMonth)window.__charts.targetMonth.destroy();
+	var ctx=document.getElementById('targetMonthlyChart').getContext('2d');
+	var d=targetMonthlyTrend;
+	var chart=new Chart(ctx,{
+		type:'line',data:{labels:d.labels,datasets:[
+			{label:'目标',data:d.target,borderColor:'#94a3b8',borderDash:[4,2],tension:0.3,pointRadius:2,borderWidth:2},
+			{label:'实际',data:d.actual,borderColor:'#3b82f6',tension:0.3,pointRadius:3,borderWidth:2},
+			{label:'达成率%',data:d.rate,borderColor:'#22c55e',tension:0.3,pointRadius:3,borderWidth:2,yAxisID:'y1'}
+		]},
+		options:{responsive:true,maintainAspectRatio:false,
+			plugins:{legend:{position:'bottom',labels:{boxWidth:6,padding:8,font:{size:8},usePointStyle:true}}},
+			scales:{
+				x:{grid:{display:false},ticks:{font:{size:8}}},
+				y:{position:'left',grid:{color:'#e2e8f0'},ticks:{font:{size:8}}},
+				y1:{position:'right',grid:{drawOnChartArea:false},min:90,max:100,ticks:{callback:function(v){return v+'%';},font:{size:8}}}
+			}
+		}
+	});
+	if(!window.__charts)window.__charts={};window.__charts.targetMonth=chart;
+}
+
+function renderTargetProjects(){
+	var html='';
+	var colors=['#3b82f6','#22c55e','#f59e0b','#ef4444','#8b5cf6'];
+	for(var i=0;i<targetProjects.length;i++){
+		var p=targetProjects[i];
+		var prog=parseInt(p.progress);
+		var barColor=prog>=70?'bg-green-500':(prog>=40?'bg-blue-500':'bg-amber-500');
+		var stCls=p.status==='正常'?'badge-green':'badge-red';
+		html+='<div class="border border-slate-100 rounded-lg p-2">'+
+			'<div class="flex items-center justify-between mb-1"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full" style="background:'+colors[i]+'"></span><span class="text-[11px] font-medium text-slate-700">'+p.project+'</span></div><span class="'+stCls+'">'+p.status+'</span></div>'+
+			'<div class="flex items-center gap-2 mb-1"><div class="flex-1 bg-slate-100 rounded-full h-1.5 overflow-hidden"><div class="'+barColor+' h-full rounded-full" style="width:'+p.progress+'"></div></div><span class="text-[10px] font-semibold text-slate-700">'+p.progress+'</span></div>'+
+			'<div class="flex justify-between text-[9px] text-slate-400"><span>'+p.owner+'</span><span>目标: '+p.target+'</span></div>'+
+		'</div>';
+	}
+	document.getElementById('targetProjectsArea').innerHTML=html;
+}
+
+function renderTargetOKR(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">目标</th><th class="p-1.5 text-center text-slate-400">负责人</th><th class="p-1.5 text-left text-slate-400">KR1</th><th class="p-1.5 text-center text-slate-400">进度</th><th class="p-1.5 text-left text-slate-400">KR2</th><th class="p-1.5 text-center text-slate-400">进度</th><th class="p-1.5 text-left text-slate-400">KR3</th><th class="p-1.5 text-center text-slate-400">进度</th></tr></thead><tbody>';
+	for(var i=0;i<targetOKRData.length;i++){
+		var o=targetOKRData[i];
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+o.objective+'</td>'+
+			'<td class="p-1.5 text-center text-slate-600">'+o.owner+'</td>'+
+			'<td class="p-1.5 text-slate-500">'+o.kr1+'</td><td class="p-1.5 text-center text-slate-700 font-semibold">'+o.kr1p+'</td>'+
+			'<td class="p-1.5 text-slate-500">'+o.kr2+'</td><td class="p-1.5 text-center text-slate-700 font-semibold">'+o.kr2p+'</td>'+
+			'<td class="p-1.5 text-slate-500">'+o.kr3+'</td><td class="p-1.5 text-center text-slate-700 font-semibold">'+o.kr3p+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('targetOKRArea').innerHTML=html;
+}
+
+
+
+function renderDataSlowQuery(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">查询名称</th><th class="p-1.5 text-right text-slate-400">耗时(ms)</th><th class="p-1.5 text-right text-slate-400">扫描行数</th><th class="p-1.5 text-center text-slate-400">频率</th><th class="p-1.5 text-center text-slate-400">优化建议</th></tr></thead><tbody>';
+	var data=[
+		{name:'渠道销售汇总',time:2850,rows:'256万',freq:'每日','suggest':'增加索引'},
+		{name:'客户画像全量',time:1680,rows:'128万',freq:'每周','suggest':'分区表'},
+		{name:'库存周转明细',time:1250,rows:'86万',freq:'每日','suggest':'物化视图'},
+		{name:'订单趋势分析',time:980,rows:'52万',freq:'实时','suggest':'缓存预热'},
+		{name:'财务报表导出',time:820,rows:'38万',freq:'每月','suggest':'异步处理'}
+	];
+	for(var i=0;i<data.length;i++){
+		var d=data[i];
+		var cls=d.time>2000?'kpi-down':(d.time>1000?'kpi-warn':'kpi-up');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+d.name+'</td>'+
+			'<td class="p-1.5 text-right font-semibold '+cls+'">'+d.time+'</td>'+
+			'<td class="p-1.5 text-right text-slate-600">'+d.rows+'</td>'+
+			'<td class="p-1.5 text-center text-slate-500">'+d.freq+'</td>'+
+			'<td class="p-1.5 text-center text-blue-500 font-medium">'+d.suggest+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('dataSlowQueryArea').innerHTML=html;
+}
+
+
+function renderOrgStaff(){
+	var html='<table class="text-[10px] w-full"><thead><tr class="border-b border-slate-100">'+
+		'<th class="p-1.5 text-left text-slate-400">部门</th><th class="p-1.5 text-right text-slate-400">编制</th><th class="p-1.5 text-right text-slate-400">在岗</th><th class="p-1.5 text-right text-slate-400">缺口</th><th class="p-1.5 text-center text-slate-400">满编率</th></tr></thead><tbody>';
+	var data=[
+		{dept:'运营部',budget:92,actual:86,gap:6,rate:'93.5%'},
+		{dept:'销售部',budget:78,actual:72,gap:6,rate:'92.3%'},
+		{dept:'供应链',budget:62,actual:58,gap:4,rate:'93.5%'},
+		{dept:'市场部',budget:48,actual:42,gap:6,rate:'87.5%'},
+		{dept:'技术部',budget:58,actual:52,gap:6,rate:'89.7%'},
+		{dept:'财务部',budget:30,actual:28,gap:2,rate:'93.3%'}
+	];
+	for(var i=0;i<data.length;i++){
+		var d=data[i];
+		var cls=parseFloat(d.rate)>=95?'kpi-up':(parseFloat(d.rate)>=90?'kpi-warn':'kpi-down');
+		html+='<tr class="border-b border-slate-50 hover:bg-slate-50">'+
+			'<td class="p-1.5 text-slate-700 font-medium">'+d.dept+'</td>'+
+			'<td class="p-1.5 text-right text-slate-600">'+d.budget+'</td>'+
+			'<td class="p-1.5 text-right text-slate-700 font-semibold">'+d.actual+'</td>'+
+			'<td class="p-1.5 text-right text-red-500 font-semibold">'+d.gap+'</td>'+
+			'<td class="p-1.5 text-center font-semibold '+cls+'">'+d.rate+'</td></tr>';
+	}
+	html+='</tbody></table>';
+	document.getElementById('orgStaffArea').innerHTML=html;
+}
+
 // ===== 总渲染 =====
 function renderAll(){
     if(currentView==='online'){
@@ -3478,6 +4803,58 @@ function renderAll(){
         try{renderFinanceCashflowTrend();}catch(e){console.error(e);}
         try{renderFinanceInventoryUsage();}catch(e){console.error(e);}
         try{renderFinanceHealthChecklist();}catch(e){console.error(e);}
+    }else if(currentView==='tech'){
+        document.getElementById('dashboardContent').innerHTML=buildTechLayoutHTML();
+        try{renderTechKPIs();}catch(e){console.error(e);}
+        try{renderTechFaultChart();}catch(e){console.error(e);}
+        try{renderTechModelTable();}catch(e){console.error(e);}
+        try{renderTechTicketChart();}catch(e){console.error(e);}
+        try{renderTechIndustryChart();}catch(e){console.error(e);}
+        try{renderTechPartsTable();}catch(e){console.error(e);}
+        try{renderTechRiskTable();}catch(e){console.error(e);}
+        try{renderTechKnowledge();}catch(e){console.error(e);}
+    }else if(currentView==='meeting'){
+        document.getElementById('dashboardContent').innerHTML=buildMeetingLayoutHTML();
+        try{renderMeetingKPIs();}catch(e){console.error(e);}
+        try{renderMeetingTypeChart();}catch(e){console.error(e);}
+        try{renderMeetingDeptChart();}catch(e){console.error(e);}
+        try{renderMeetingTrendChart();}catch(e){console.error(e);}
+        try{renderMeetingTaskTable();}catch(e){console.error(e);}
+        try{renderMeetingOverdue();}catch(e){console.error(e);}
+        try{renderMeetingResolutionTable();}catch(e){console.error(e);}
+        try{renderMeetingCalendar();}catch(e){console.error(e);}
+    }else if(currentView==='task'){
+        document.getElementById('dashboardContent').innerHTML=buildTaskLayoutHTML();
+        try{renderTaskKPIs();}catch(e){console.error(e);}
+        try{renderTaskStatusChart();}catch(e){console.error(e);}
+        try{renderTaskDeptCollab();}catch(e){console.error(e);}
+        try{renderTaskTrendChart();}catch(e){console.error(e);}
+        try{renderTaskListTable();}catch(e){console.error(e);}
+        try{renderTaskProjects();}catch(e){console.error(e);}
+    }else if(currentView==='org'){
+        document.getElementById('dashboardContent').innerHTML=buildOrgLayoutHTML();
+        try{renderOrgKPIs();}catch(e){console.error(e);}
+        try{renderOrgDeptChart();}catch(e){console.error(e);}
+        try{renderOrgPerformanceChart();}catch(e){console.error(e);}
+        try{renderOrgRecruitTable();}catch(e){console.error(e);}
+        try{renderOrgTrendChart();}catch(e){console.error(e);}
+        try{renderOrgStaff();}catch(e){console.error(e);}
+    }else if(currentView==='data'){
+        document.getElementById('dashboardContent').innerHTML=buildDataLayoutHTML();
+        try{renderDataKPIs();}catch(e){console.error(e);}
+        try{renderDataSourceChart();}catch(e){console.error(e);}
+        try{renderDataETLTable();}catch(e){console.error(e);}
+        try{renderDataReportTable();}catch(e){console.error(e);}
+        try{renderDataTrendChart();}catch(e){console.error(e);}
+        try{renderDataStorage();}catch(e){console.error(e);}
+        try{renderDataSlowQuery();}catch(e){console.error(e);}
+    }else if(currentView==='target'){
+        document.getElementById('dashboardContent').innerHTML=buildTargetLayoutHTML();
+        try{renderTargetKPIs();}catch(e){console.error(e);}
+        try{renderTargetDeptChart();}catch(e){console.error(e);}
+        try{renderTargetMonthlyChart();}catch(e){console.error(e);}
+        try{renderTargetProjects();}catch(e){console.error(e);}
+        try{renderTargetOKR();}catch(e){console.error(e);}
     }else if(currentView==='supply'){
         document.getElementById('dashboardContent').innerHTML=buildSupplyLayoutHTML();
         try{renderSupplyKPIs();}catch(e){console.error(e);}
@@ -3515,7 +4892,7 @@ document.addEventListener('DOMContentLoaded',function(){
     renderAll();
     // 月份切换
     document.getElementById('monthSelect').addEventListener('change',function(){
-        if(currentView==='dashboard'||currentView==='finance'||currentView==='supply')renderAll();
+        if(currentView==='dashboard'||currentView==='finance'||currentView==='supply'||currentView==='tech'||currentView==='meeting')renderAll();
     });
     // 全局事件委托：坑位tab切换 + 图表tab切换
     document.addEventListener('click',function(e){
